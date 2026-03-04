@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Prezzi — BotReady</title>
-<meta name="description" content="BotReady: bot AI per WhatsApp e Telegram. Piano Base €49, Pro €99, Business €199/mese. Nessun contratto, setup in 24h.">
+<meta name="description" content="BotReady risponde per te su WhatsApp — prenotazioni, FAQ, promemoria no-show. Starter: setup €99 + €29/mese. Pro: €59/mese. Enterprise: €99/mese. Nessun contratto.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -532,23 +532,26 @@ footer {
   </div>
   <div class="plans-grid">
 
-    <!-- BASE -->
+    <!-- STARTER -->
     <div class="plan-card base">
       <div class="card-header">
         <div class="card-dot" style="background:#3b82f6"></div>
         <div class="card-dot" style="background:#1d4ed8;opacity:.4"></div>
         <div class="card-dot" style="background:#1e3a8a;opacity:.2"></div>
-        <span class="card-tab base">base.conf</span>
+        <span class="card-tab base">starter.conf</span>
       </div>
       <div class="card-body">
-        <div class="plan-type">// Piano Base</div>
-        <div class="plan-price-wrap">
-          <span class="plan-sym">€</span>
-          <span class="plan-amount">49</span>
+        <div class="plan-type">// Piano Starter</div>
+        <div class="plan-price-wrap" style="flex-direction:column;align-items:flex-start;gap:2px">
+          <div style="display:flex;align-items:baseline;gap:4px">
+            <span class="plan-sym">€</span>
+            <span class="plan-amount">99</span>
+            <span style="font-size:12px;color:var(--muted)">setup</span>
+          </div>
+          <div style="font-size:13px;color:var(--muted);margin-top:2px"># poi €29/mese · nessun contratto</div>
         </div>
-        <div class="plan-per"># al mese · IVA inclusa · nessun contratto</div>
-        <ul class="plan-feats">
-          <li class="plan-feat on"><span class="feat-icon yes">✓</span>1 canale (Telegram o WhatsApp)</li>
+        <ul class="plan-feats" style="margin-top:16px">
+          <li class="plan-feat on"><span class="feat-icon yes">✓</span>1 canale WhatsApp Business</li>
           <li class="plan-feat on"><span class="feat-icon yes">✓</span>Fino a 500 messaggi/mese</li>
           <li class="plan-feat on"><span class="feat-icon yes">✓</span>5 FAQ personalizzate</li>
           <li class="plan-feat on"><span class="feat-icon yes">✓</span>Setup in 48 ore</li>
@@ -556,7 +559,7 @@ footer {
           <li class="plan-feat"><span class="feat-icon no">✗</span><span style="opacity:.35">Aggiornamenti inclusi</span></li>
           <li class="plan-feat"><span class="feat-icon no">✗</span><span style="opacity:.35">Report mensile</span></li>
         </ul>
-        <button class="plan-cta-btn" onclick="openModal('Base')">init base</button>
+        <button class="plan-cta-btn" onclick="openModal('Starter')">init starter</button>
       </div>
     </div>
 
@@ -573,35 +576,35 @@ footer {
         <div class="plan-type">// Piano Pro</div>
         <div class="plan-price-wrap">
           <span class="plan-sym">€</span>
-          <span class="plan-amount">99</span>
+          <span class="plan-amount">59</span>
         </div>
         <div class="plan-per"># al mese · IVA inclusa · nessun contratto</div>
         <ul class="plan-feats">
-          <li class="plan-feat on"><span class="feat-icon yes">✓</span>2 canali (Telegram + WhatsApp)</li>
+          <li class="plan-feat on"><span class="feat-icon yes">✓</span>WhatsApp Business + Telegram</li>
           <li class="plan-feat on"><span class="feat-icon yes">✓</span>Messaggi illimitati</li>
           <li class="plan-feat on"><span class="feat-icon yes">✓</span>20 FAQ personalizzate</li>
           <li class="plan-feat on"><span class="feat-icon yes">✓</span>Setup in 24 ore</li>
           <li class="plan-feat on"><span class="feat-icon yes">✓</span>Aggiornamenti inclusi</li>
           <li class="plan-feat on"><span class="feat-icon yes">✓</span>Report mensile</li>
-          <li class="plan-feat on"><span class="feat-icon yes">✓</span>Personalità AI su misura</li>
+          <li class="plan-feat on"><span class="feat-icon yes">✓</span>Risponde con la tua voce</li>
         </ul>
         <button class="plan-cta-btn" onclick="openModal('Pro')">init pro</button>
       </div>
     </div>
 
-    <!-- BUSINESS -->
+    <!-- ENTERPRISE -->
     <div class="plan-card biz">
       <div class="card-header">
         <div class="card-dot" style="background:#a78bfa"></div>
         <div class="card-dot" style="background:#7c3aed;opacity:.5"></div>
         <div class="card-dot" style="background:#4c1d95;opacity:.3"></div>
-        <span class="card-tab biz">business.conf</span>
+        <span class="card-tab biz">enterprise.conf</span>
       </div>
       <div class="card-body">
-        <div class="plan-type">// Piano Business</div>
+        <div class="plan-type">// Piano Enterprise</div>
         <div class="plan-price-wrap">
           <span class="plan-sym">€</span>
-          <span class="plan-amount" style="background:linear-gradient(135deg,#a78bfa,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">199</span>
+          <span class="plan-amount" style="background:linear-gradient(135deg,#a78bfa,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">99</span>
         </div>
         <div class="plan-per"># al mese · IVA inclusa · nessun contratto</div>
         <ul class="plan-feats">
@@ -611,9 +614,9 @@ footer {
           <li class="plan-feat on"><span class="feat-icon yes">✓</span>Setup in 24 ore</li>
           <li class="plan-feat on"><span class="feat-icon yes">✓</span>Aggiornamenti prioritari</li>
           <li class="plan-feat on"><span class="feat-icon yes">✓</span>Report avanzato settimanale</li>
-          <li class="plan-feat on"><span class="feat-icon yes">✓</span>Fino a 3 bot distinti</li>
+          <li class="plan-feat on"><span class="feat-icon yes">✓</span>Fino a 3 sedi o attività</li>
         </ul>
-        <button class="plan-cta-btn" onclick="openModal('Business')" style="border-color:rgba(167,139,250,.3)" onmouseover="this.style.borderColor='#a78bfa';this.style.color='#a78bfa'" onmouseout="this.style.borderColor='rgba(167,139,250,.3)';this.style.color=''">init business</button>
+        <button class="plan-cta-btn" onclick="openModal('Enterprise')" style="border-color:rgba(167,139,250,.3)" onmouseover="this.style.borderColor='#a78bfa';this.style.color='#a78bfa'" onmouseout="this.style.borderColor='rgba(167,139,250,.3)';this.style.color=''">init enterprise</button>
       </div>
     </div>
   </div>
@@ -623,15 +626,15 @@ footer {
 <section class="diff-section">
   <div class="diff-inner">
     <div class="section-prompt">
-      <span class="sp">~/botready</span> <span class="sc">$ diff base.conf pro.conf business.conf</span>
+      <span class="sp">~/botready</span> <span class="sc">$ diff starter.conf pro.conf enterprise.conf</span>
     </div>
     <table class="diff-table">
       <thead>
         <tr>
           <th>Feature</th>
-          <th class="col-base">Base · €49</th>
-          <th class="col-pro">Pro · €99</th>
-          <th class="col-biz">Business · €199</th>
+          <th class="col-base">Starter · €29/mese</th>
+          <th class="col-pro">Pro · €59</th>
+          <th class="col-biz">Enterprise · €99</th>
         </tr>
       </thead>
       <tbody>
@@ -639,10 +642,10 @@ footer {
         <tr><td>Messaggi/mese</td><td class="dc-partial">500</td><td class="dc-yes">Illimitati</td><td class="dc-yes2">Illimitati</td></tr>
         <tr><td>FAQ personalizzate</td><td class="dc-yes">5</td><td class="dc-yes">20</td><td class="dc-yes2">Illimitate</td></tr>
         <tr><td>Tempo setup</td><td class="dc-partial">48h</td><td class="dc-yes">24h</td><td class="dc-yes2">24h</td></tr>
-        <tr><td>Personalità AI custom</td><td class="dc-no">—</td><td class="dc-yes">✓</td><td class="dc-yes2">✓</td></tr>
+        <tr><td>Risposta personalizzata</td><td class="dc-no">—</td><td class="dc-yes">✓</td><td class="dc-yes2">✓</td></tr>
         <tr><td>Aggiornamenti inclusi</td><td class="dc-no">—</td><td class="dc-yes">✓ standard</td><td class="dc-yes2">✓ prioritari</td></tr>
         <tr><td>Report analytics</td><td class="dc-no">—</td><td class="dc-yes">Mensile</td><td class="dc-yes2">Settimanale</td></tr>
-        <tr><td>Bot distinti</td><td>1</td><td>1</td><td class="dc-yes2">Fino a 3</td></tr>
+        <tr><td>Sedi / attività</td><td>1</td><td>1</td><td class="dc-yes2">Fino a 3</td></tr>
         <tr><td>Supporto</td><td>Email</td><td class="dc-yes">Priorità media</td><td class="dc-yes2">Priorità alta</td></tr>
         <tr><td>Contratto minimo</td><td class="dc-yes">Nessuno</td><td class="dc-yes">Nessuno</td><td class="dc-yes2">Nessuno</td></tr>
       </tbody>
@@ -659,7 +662,7 @@ footer {
     <div class="stat-box">
       <div class="stat-label">uptime</div>
       <div class="stat-value" id="sv-1">99.9%</div>
-      <div class="stat-desc">disponibilità garantita del bot</div>
+      <div class="stat-desc">sempre disponibile per i tuoi clienti</div>
     </div>
     <div class="stat-box">
       <div class="stat-label">response_time</div>
@@ -669,7 +672,7 @@ footer {
     <div class="stat-box">
       <div class="stat-label">setup_time</div>
       <div class="stat-value" id="sv-3">24h</div>
-      <div class="stat-desc">dal pagamento al bot attivo</div>
+      <div class="stat-desc">dal pagamento all'attivazione</div>
     </div>
     <div class="stat-box">
       <div class="stat-label">exit_cost</div>
@@ -697,28 +700,28 @@ footer {
       Come funziona la cancellazione?
       <span class="faq-icon">+</span>
     </div>
-    <div class="faq-a"><div class="faq-a-inner">Un messaggio WhatsApp o email, e il bot si spegne a fine mese corrente. <em>Nessun preavviso, nessun costo aggiuntivo, nessuna clausola.</em></div></div>
+    <div class="faq-a"><div class="faq-a-inner">Un messaggio WhatsApp o email, e il servizio si disattiva a fine mese corrente. <em>Nessun preavviso, nessun costo aggiuntivo, nessuna clausola.</em></div></div>
   </div>
   <div class="faq-item">
     <div class="faq-q" onclick="toggleFaq(this)">
-      Cosa succede se supero i 500 messaggi/mese (Base)?
+      Cosa succede se supero i 500 messaggi/mese (Starter)?
       <span class="faq-icon">+</span>
     </div>
-    <div class="faq-a"><div class="faq-a-inner">Ti avvisiamo prima di raggiungere il limite. Puoi passare al piano Pro o attendere il mese successivo. Il bot non si blocca di colpo senza preavviso.</div></div>
+    <div class="faq-a"><div class="faq-a-inner">Ti avvisiamo prima di raggiungere il limite. Puoi passare al piano Pro o attendere il mese successivo. Il servizio non si blocca di colpo senza preavviso.</div></div>
   </div>
   <div class="faq-item">
     <div class="faq-q" onclick="toggleFaq(this)">
-      Il bot risponde anche di notte?
+      Risponde anche di notte?
       <span class="faq-icon">+</span>
     </div>
-    <div class="faq-a"><div class="faq-a-inner">Sì, 24/7. Il bot non dorme. <em>Uptime garantito 99.9%</em> — risponde anche alle 3 di notte quando il cliente cerca informazioni sull'orario o una prenotazione.</div></div>
+    <div class="faq-a"><div class="faq-a-inner">Sì, 24/7. Risponde sempre. <em>Uptime garantito 99.9%</em> — anche alle 3 di notte quando il cliente cerca informazioni sull'orario o vuole fare una prenotazione.</div></div>
   </div>
   <div class="faq-item">
     <div class="faq-q" onclick="toggleFaq(this)">
-      Posso avere il bot su WhatsApp E Telegram?
+      Funziona su WhatsApp e Telegram?
       <span class="faq-icon">+</span>
     </div>
-    <div class="faq-a"><div class="faq-a-inner">Con il piano <em>Pro</em> o <em>Business</em> sì — entrambi i canali inclusi nello stesso prezzo. Con il piano Base puoi scegliere uno dei due.</div></div>
+    <div class="faq-a"><div class="faq-a-inner">Con il piano <em>Pro</em> o <em>Enterprise</em> sì — entrambi i canali inclusi nello stesso prezzo. Con il piano Starter puoi scegliere WhatsApp Business.</div></div>
   </div>
 </section>
 
@@ -733,12 +736,12 @@ footer {
     </div>
     <div class="cta-body">
       <div class="cta-cmd-line"><span class="cp">botready@system</span>:~$ <span class="ct">./start.sh --plan=pro --trial=true</span></div>
-      <div class="cta-cmd-line" style="color:var(--teal);margin-top:6px">✓ Bot configurato · Setup gratuito · Prima settimana su di noi</div>
-      <h2 class="cta-title">Inizia oggi.<br>Il bot va <span class="t">live in 24 ore.</span></h2>
-      <p class="cta-sub">Nessuna carta di credito richiesta per il setup. Paghi solo quando il bot è attivo.</p>
+      <div class="cta-cmd-line" style="color:var(--teal);margin-top:6px">✓ Configurato · Pronto in 24 ore · Prima settimana su di noi</div>
+      <h2 class="cta-title">Inizia oggi.<br>Vai <span class="t">live in 24 ore.</span></h2>
+      <p class="cta-sub">Nessuna carta di credito richiesta per il setup. Paghi solo quando è attivo.</p>
       <div class="cta-buttons">
         <button class="btn-term primary" onclick="openModal('Pro')">init --plan=pro</button>
-        <button class="btn-term ghost" onclick="openModal('Base')">init --plan=base</button>
+        <button class="btn-term ghost" onclick="openModal('Starter')">init --plan=starter</button>
       </div>
     </div>
   </div>
@@ -768,9 +771,9 @@ footer {
       <input id="m-nome" type="text" placeholder="nome" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:13px 16px;font-size:13px;color:var(--text);font-family:var(--mono);outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--teal)'" onblur="this.style.borderColor='var(--border)'">
       <input id="m-wa" type="tel" placeholder="whatsapp (es. 333 1234567)" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:13px 16px;font-size:13px;color:var(--text);font-family:var(--mono);outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--teal)'" onblur="this.style.borderColor='var(--border)'">
       <select id="m-piano" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:13px 16px;font-size:13px;color:var(--text);font-family:var(--mono);outline:none">
-        <option value="Base">Piano Base — €49/mese</option>
-        <option value="Pro" selected>Piano Pro — €99/mese</option>
-        <option value="Business">Piano Business — €199/mese</option>
+        <option value="Starter">Starter — Setup €99 + €29/mese</option>
+        <option value="Pro" selected>Pro — €59/mese (consigliato)</option>
+        <option value="Enterprise">Enterprise — €99/mese</option>
       </select>
       <button onclick="submitM()" style="background:var(--teal);color:var(--bg);border:none;border-radius:8px;padding:14px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--mono);transition:background .2s" onmouseover="this.style.background='var(--green)'" onmouseout="this.style.background='var(--teal)'">$ send --message → WhatsApp</button>
     </div>
@@ -822,9 +825,9 @@ window.addEventListener('scroll', () => {
     { t: 'muted', text: '├─────────────┬──────────┬────────────────────┤', delay: 0 },
     { t: 'muted', text: '│ Piano       │ Prezzo   │ Canali             │', delay: 0 },
     { t: 'muted', text: '├─────────────┼──────────┼────────────────────┤', delay: 0 },
-    { t: 'base', text: '│ Base        │ €49/mese │ 1 (Telegram o WA)  │', delay: 150 },
-    { t: 'pro', text:  '│ Pro         │ €99/mese │ 2 (Telegram + WA)  │', delay: 200 },
-    { t: 'biz', text:  '│ Business    │€199/mese │ Multi-canale       │', delay: 200 },
+    { t: 'base', text: '│ Starter     │ €29/mese │ 1 WhatsApp Biz     │', delay: 150 },
+    { t: 'pro', text:  '│ Pro         │ €59/mese │ WhatsApp + TG      │', delay: 200 },
+    { t: 'biz', text:  '│ Enterprise  │ €99/mese │ Multi-canale       │', delay: 200 },
     { t: 'muted', text: '└─────────────┴──────────┴────────────────────┘', delay: 100 },
     { t: 'muted', text: '', delay: 200 },
     { t: 'ok', text: '✓ Nessun contratto · Setup in 24h · Cancella gratis', delay: 200 },
