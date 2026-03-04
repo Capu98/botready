@@ -239,6 +239,7 @@ section { padding: clamp(80px, 10vw, 120px) clamp(20px, 5vw, 80px); }
 
 .floating-badge {
   position: absolute;
+  z-index: 10;
   background: var(--bg2); border: 1px solid var(--border);
   border-radius: 12px; padding: 10px 14px;
   font-size: 12px; display: flex; align-items: center; gap: 8px;
@@ -860,9 +861,6 @@ footer {
             Ciao! Avete tavoli disponibili sabato sera per 4 persone? 🙂
             <div class="chat-msg-time">20:47</div>
           </div>
-          <div class="chat-typing">
-            <span></span><span></span><span></span>
-          </div>
           <div class="chat-msg outgoing" style="animation-delay:.8s">
             Ciao! Sì, abbiamo disponibilità sabato sera 🎉<br>
             Preferite le 20:00 o le 21:30?
@@ -875,6 +873,9 @@ footer {
           <div class="chat-msg outgoing">
             Perfetto! Ho prenotato per 4 persone sabato alle 20:00 a nome di..?
             <div class="chat-msg-time">20:48</div>
+          </div>
+          <div class="chat-typing">
+            <span></span><span></span><span></span>
           </div>
         </div>
         <div class="chat-input-bar">
