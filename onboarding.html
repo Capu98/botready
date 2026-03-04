@@ -244,6 +244,14 @@ body {
         <option>Altro</option>
       </select>
     </div>
+    <div class="field">
+      <label>Indirizzo completo *</label>
+      <input type="text" id="o-indirizzo" placeholder="Es: Via Roma 42, 20121 Milano (MI)">
+    </div>
+    <div class="field">
+      <label>Sito web (facoltativo)</label>
+      <input type="url" id="o-sito" placeholder="Es: www.pizzeriadamario.it">
+    </div>
 
     <div class="btn-row">
       <button class="btn-next" onclick="goNext(1)">Avanti →</button>
@@ -301,12 +309,35 @@ body {
     </div>
   </div>
 
-  <!-- STEP 3: FAQ -->
+  <!-- STEP 3: Dettagli + FAQ -->
   <div class="step" id="step3">
     <div class="step-icon">💬</div>
-    <h2 class="step-title">Le domande dei tuoi clienti</h2>
-    <p class="step-sub">Quali domande ricevi più spesso? Scrivi almeno 3 domande tipiche e come vuoi che il bot risponda.</p>
+    <h2 class="step-title">La tua attività</h2>
+    <p class="step-sub">Raccontaci di più — così il bot potrà rispondere ai clienti con informazioni reali.</p>
 
+    <div class="field">
+      <label>Tipo di cucina / servizio</label>
+      <input type="text" id="o-cucina" placeholder="Es: cucina italiana tradizionale, pizzeria napoletana, trattoria di pesce...">
+      <div class="field-hint">Descrivi in poche parole cosa offri</div>
+    </div>
+    <div class="field">
+      <label>Specialità della casa (3-5 piatti o servizi)</label>
+      <textarea id="o-specialita" placeholder="Es: Pasta alla Norma, Pizza Margherita con mozzarella di bufala, Tiramisù della casa..."></textarea>
+    </div>
+    <div class="two-col">
+      <div class="field">
+        <label>Fascia prezzi</label>
+        <input type="text" id="o-prezzi" placeholder="Es: primi 10-14€, pizze 7-12€">
+      </div>
+      <div class="field">
+        <label>Metodi di pagamento</label>
+        <input type="text" id="o-pagamenti" placeholder="Es: contanti, carte, Satispay">
+      </div>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:24px 0">
+
+    <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:12px">Domande frequenti dei tuoi clienti</label>
     <div class="faq-list-build" id="faqList">
       <div class="faq-row">
         <input type="text" placeholder="Es: Quali sono gli orari di apertura?">
@@ -484,7 +515,8 @@ function validateStep(n) {
     const nome = v('o-nome');
     const mail = v('o-email');
     const tipo = v('o-tipo');
-    if (!biz || !nome || !mail || !tipo) { alert('Compila tutti i campi obbligatori.'); return false; }
+    const ind  = v('o-indirizzo');
+    if (!biz || !nome || !mail || !tipo || !ind) { alert('Compila tutti i campi obbligatori.'); return false; }
   }
   if (n === 3) {
     const faqs = getFaqs();
@@ -561,8 +593,11 @@ function buildSummary() {
 
   const rows = [
     ['Attività',    v('o-biz') || '—'],
+    ['Indirizzo',   v('o-indirizzo') || '—'],
     ['Referente',   v('o-nome') || '—'],
     ['Email',       v('o-email') || '—'],
+    ['Cucina',      v('o-cucina') || '—'],
+    ['Prezzi',      v('o-prezzi') || '—'],
     ['Orari',       `${v('o-open1')}–${v('o-close1')} / ${v('o-open2')}–${v('o-close2')}`],
     ['Giorni',      days || '—'],
     ['Nome bot',    v('o-botname') || 'Auto-generato'],
@@ -594,10 +629,16 @@ async function submitOnboarding() {
   const hasWa = document.getElementById('ch-whatsapp').classList.contains('selected');
 
   const payload = {
-    biz:       v('o-biz'),
-    nome:      v('o-nome'),
-    email:     v('o-email'),
-    tipo:      v('o-tipo'),
+    biz:        v('o-biz'),
+    nome:       v('o-nome'),
+    email:      v('o-email'),
+    tipo:       v('o-tipo'),
+    indirizzo:  v('o-indirizzo'),
+    sito:       v('o-sito'),
+    cucina:     v('o-cucina'),
+    specialita: v('o-specialita'),
+    prezzi:     v('o-prezzi'),
+    pagamenti:  v('o-pagamenti'),
     orari: {
       mattina:     `${v('o-open1')}–${v('o-close1')}`,
       pomeriggio:  `${v('o-open2')}–${v('o-close2')}`,
