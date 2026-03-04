@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prezzi — BotReady</title>
+<meta name="description" content="BotReady: bot AI per WhatsApp e Telegram. Piano Base €49, Pro €99, Business €199/mese. Nessun contratto, setup in 24h.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #07090f;
+  --bg2:     #0c1120;
+  --bg3:     #111827;
+  --border:  #1a2540;
+  --teal:    #00d4b4;
+  --teal2:   #00a896;
+  --green:   #10d48e;
+  --amber:   #f59e0b;
+  --red:     #f43f5e;
+  --purple:  #a78bfa;
+  --text:    #e2ecf5;
+  --muted:   #5a7090;
+  --white:   #ffffff;
+  --mono:    'JetBrains Mono', 'Courier New', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+
+/* ── SCANLINES OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(0,0,0,.06) 2px,
+    rgba(0,0,0,.06) 4px
+  );
+  pointer-events: none; z-index: 9990;
+}
+
+/* ── MATRIX CANVAS ── */
+#matrix-canvas {
+  position: fixed; inset: 0;
+  opacity: 0.04; pointer-events: none; z-index: 0;
+}
+
+/* ── NAV ── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(7,9,15,.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  height: 64px;
+  display: flex; align-items: center;
+  padding: 0 clamp(20px,5vw,80px);
+}
+.nav-inner {
+  max-width: 1200px; margin: 0 auto; width: 100%;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+  font-size: 18px; font-weight: 800; letter-spacing: -0.5px;
+  color: var(--white); display: flex; align-items: center; gap: 6px;
+}
+.nav-logo span { color: var(--teal); }
+.nav-back {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--muted); transition: color .2s;
+  font-family: var(--mono); font-size: 12px;
+}
+.nav-back::before { content: '←'; }
+.nav-back:hover { color: var(--teal); }
+.nav-cta {
+  background: var(--teal); color: #07090f;
+  font-size: 13px; font-weight: 700;
+  padding: 9px 22px; border-radius: 8px;
+  transition: all .2s; border: none; cursor: pointer;
+  font-family: var(--mono);
+}
+.nav-cta:hover { background: var(--green); transform: translateY(-1px); }
+.nav-progress { position: absolute; bottom: 0; left: 0; height: 2px; background: linear-gradient(90deg, var(--teal), var(--green)); width: 0%; pointer-events: none; }
+
+/* ── HERO TERMINAL ── */
+.hero-terminal {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  padding: 100px clamp(20px,5vw,80px) 60px;
+  position: relative; z-index: 1;
+}
+.term-window {
+  width: 100%; max-width: 860px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 40px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(0,212,180,.05), inset 0 1px 0 rgba(255,255,255,.03);
+  overflow: hidden;
+}
+.term-header {
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 20px;
+  display: flex; align-items: center; gap: 10px;
+}
+.term-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+}
+.term-dot.r { background: #ff5f57; }
+.term-dot.y { background: #febc2e; }
+.term-dot.g { background: #28c840; }
+.term-title {
+  font-family: var(--mono); font-size: 12px; color: var(--muted);
+  margin-left: 8px;
+}
+.term-body {
+  padding: 28px 32px 36px;
+  font-family: var(--mono); font-size: 13.5px; line-height: 1.9;
+  min-height: 320px;
+}
+.t-prompt { color: var(--teal); }
+.t-cmd { color: var(--text); }
+.t-ok { color: var(--green); }
+.t-warn { color: var(--amber); }
+.t-muted { color: var(--muted); }
+.t-plan-base { color: #60a5fa; font-weight: 700; }
+.t-plan-pro { color: var(--teal); font-weight: 700; }
+.t-plan-biz { color: var(--purple); font-weight: 700; }
+.t-price { color: var(--white); font-weight: 700; }
+.term-cursor {
+  display: inline-block; width: 8px; height: 15px;
+  background: var(--teal); vertical-align: middle; margin-left: 2px;
+  animation: blink .9s step-end infinite;
+}
+@keyframes blink { 0%,100%{ opacity:1; } 50%{ opacity:0; } }
+.term-line { display: block; white-space: pre; }
+.term-line.hidden { display: none; }
+
+/* ── HEADLINE BELOW TERMINAL ── */
+.hero-sub-line {
+  margin-top: 40px; text-align: center; position: relative; z-index: 1;
+}
+.glitch-title {
+  font-size: clamp(36px,5vw,62px); font-weight: 900; letter-spacing: -2px;
+  color: var(--white); position: relative; display: inline-block;
+}
+.glitch-title::before, .glitch-title::after {
+  content: attr(data-text);
+  position: absolute; top: 0; left: 0;
+  font-size: inherit; font-weight: inherit; letter-spacing: inherit;
+}
+.glitch-title::before {
+  left: 2px; text-shadow: -2px 0 var(--teal);
+  animation: glitchA 3.5s infinite steps(1);
+  clip-path: polygon(0 15%, 100% 15%, 100% 40%, 0 40%);
+}
+.glitch-title::after {
+  left: -2px; text-shadow: 2px 0 var(--red);
+  animation: glitchB 3.5s infinite steps(1);
+  clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
+}
+@keyframes glitchA {
+  0%,85%,100% { opacity: 0; transform: translateX(0); }
+  86% { opacity: 1; transform: translateX(-3px); }
+  89% { opacity: 1; transform: translateX(3px); }
+  92% { opacity: 0; }
+}
+@keyframes glitchB {
+  0%,80%,100% { opacity: 0; transform: translateX(0); }
+  81% { opacity: 1; transform: translateX(2px); }
+  84% { opacity: 1; transform: translateX(-2px); }
+  87% { opacity: 0; }
+}
+.glitch-teal { color: var(--teal); }
+.hero-sub-desc {
+  font-size: 16px; color: var(--muted); margin-top: 12px; font-weight: 300;
+}
+
+/* ── PLAN CARDS ── */
+.plans-section {
+  padding: 80px clamp(20px,5vw,80px);
+  position: relative; z-index: 1;
+  max-width: 1200px; margin: 0 auto;
+}
+.section-prompt {
+  font-family: var(--mono); font-size: 13px; color: var(--muted);
+  margin-bottom: 40px;
+}
+.section-prompt .sp { color: var(--teal); }
+.section-prompt .sc { color: var(--text); }
+
+.plans-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+}
+.plan-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden;
+  transition: border-color .3s, box-shadow .3s, transform .3s;
+  position: relative;
+}
+.plan-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 60px rgba(0,0,0,.5);
+}
+.plan-card.pro {
+  border-color: var(--teal);
+  box-shadow: 0 0 40px rgba(0,212,180,.06);
+}
+.plan-card.pro:hover {
+  box-shadow: 0 24px 60px rgba(0,0,0,.5), 0 0 60px rgba(0,212,180,.1);
+}
+.plan-card.biz { border-color: rgba(167,139,250,.3); }
+
+/* card terminal header */
+.card-header {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bg3);
+}
+.card-dot { width: 10px; height: 10px; border-radius: 50%; }
+.card-tab {
+  margin-left: 10px;
+  font-family: var(--mono); font-size: 11px;
+  padding: 3px 12px; border-radius: 4px; font-weight: 600;
+}
+.card-tab.base { background: rgba(96,165,250,.12); color: #60a5fa; }
+.card-tab.pro  { background: rgba(0,212,180,.12); color: var(--teal); }
+.card-tab.biz  { background: rgba(167,139,250,.12); color: var(--purple); }
+
+.card-body { padding: 28px 28px 32px; }
+
+.plan-type {
+  font-family: var(--mono); font-size: 11px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase; color: var(--muted);
+  margin-bottom: 12px;
+}
+.plan-price-wrap { display: flex; align-items: baseline; gap: 4px; margin-bottom: 4px; }
+.plan-sym { font-size: 22px; font-weight: 700; color: var(--muted); }
+.plan-amount {
+  font-size: 62px; font-weight: 900; line-height: 1; letter-spacing: -3px;
+  background: linear-gradient(135deg, var(--white), var(--teal));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+}
+.plan-card.pro .plan-amount {
+  background: linear-gradient(135deg, var(--teal), var(--green));
+  -webkit-background-clip: text; background-clip: text;
+}
+.plan-card.biz .plan-amount {
+  background: linear-gradient(135deg, var(--purple), #c084fc);
+  -webkit-background-clip: text; background-clip: text;
+}
+.plan-per {
+  font-family: var(--mono); font-size: 11px; color: var(--muted);
+  margin-bottom: 28px;
+}
+
+/* features as code-comment list */
+.plan-feats { list-style: none; margin-bottom: 32px; }
+.plan-feat {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 7px 0; border-bottom: 1px solid rgba(26,37,64,.5);
+  font-family: var(--mono); font-size: 12.5px; color: var(--muted);
+}
+.plan-feat:last-child { border-bottom: none; }
+.plan-feat.on { color: var(--text); }
+.feat-icon { flex-shrink: 0; width: 16px; }
+.feat-icon.yes { color: var(--teal); }
+.feat-icon.no  { color: var(--border); opacity: .5; }
+.plan-card.pro .feat-icon.yes { color: var(--green); }
+.plan-card.biz .feat-icon.yes { color: var(--purple); }
+
+.plan-cta-btn {
+  display: block; width: 100%; text-align: center;
+  font-family: var(--mono); font-size: 13px; font-weight: 700;
+  padding: 14px 20px; border-radius: 8px; border: 1px solid var(--border);
+  background: transparent; color: var(--text); cursor: pointer;
+  transition: all .2s;
+}
+.plan-cta-btn::before { content: '$ '; color: var(--muted); }
+.plan-cta-btn:hover { border-color: var(--teal); color: var(--teal); background: rgba(0,212,180,.04); }
+.plan-card.pro .plan-cta-btn {
+  background: var(--teal); color: var(--bg); border-color: var(--teal);
+}
+.plan-card.pro .plan-cta-btn::before { color: rgba(7,9,15,.5); }
+.plan-card.pro .plan-cta-btn:hover { background: var(--green); border-color: var(--green); }
+.plan-card.biz .plan-cta-btn:hover { border-color: var(--purple); color: var(--purple); background: rgba(167,139,250,.04); }
+
+.plan-badge-featured {
+  position: absolute; top: -1px; right: 20px;
+  background: linear-gradient(90deg, var(--teal), var(--green));
+  color: var(--bg); font-size: 10px; font-weight: 800;
+  font-family: var(--mono); letter-spacing: 1px; text-transform: uppercase;
+  padding: 4px 14px; border-radius: 0 0 8px 8px;
+}
+
+/* ── DIFF TABLE ── */
+.diff-section {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 80px clamp(20px,5vw,80px);
+  position: relative; z-index: 1;
+}
+.diff-inner { max-width: 1000px; margin: 0 auto; }
+.diff-section .section-prompt { margin-bottom: 40px; }
+
+.diff-table {
+  width: 100%; border-collapse: collapse;
+  font-family: var(--mono); font-size: 13px;
+  border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+}
+.diff-table th {
+  text-align: left; padding: 14px 20px;
+  background: var(--bg3); color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  font-weight: 600; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+}
+.diff-table th:first-child { color: var(--text); }
+.diff-table th.col-base { color: #60a5fa; }
+.diff-table th.col-pro  { color: var(--teal); }
+.diff-table th.col-biz  { color: var(--purple); }
+
+.diff-table tr { border-bottom: 1px solid rgba(26,37,64,.4); }
+.diff-table tr:last-child { border-bottom: none; }
+.diff-table tr:hover { background: rgba(255,255,255,.015); }
+.diff-table td { padding: 13px 20px; color: var(--muted); }
+.diff-table td:first-child { color: var(--text); font-size: 12px; }
+
+.dc-yes  { color: var(--teal); font-weight: 600; }
+.dc-yes2 { color: var(--green); font-weight: 600; }
+.dc-yes3 { color: var(--purple); font-weight: 600; }
+.dc-no   { color: var(--border); }
+.dc-partial { color: var(--amber); }
+
+/* ── UPTIME STATS ── */
+.stats-section {
+  padding: 80px clamp(20px,5vw,80px);
+  max-width: 1200px; margin: 0 auto;
+  position: relative; z-index: 1;
+}
+.stats-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+  margin-top: 40px;
+}
+.stat-box {
+  background: var(--bg2);
+  padding: 32px 28px;
+  transition: background .2s;
+}
+.stat-box:hover { background: var(--bg3); }
+.stat-label {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
+}
+.stat-value {
+  font-family: var(--mono); font-size: 36px; font-weight: 700;
+  color: var(--teal); letter-spacing: -1px;
+}
+.stat-desc { font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+/* ── FAQ ── */
+.faq-section {
+  padding: 80px clamp(20px,5vw,80px);
+  max-width: 760px; margin: 0 auto;
+  position: relative; z-index: 1;
+}
+.faq-section .section-prompt { margin-bottom: 40px; }
+
+.faq-item {
+  border-bottom: 1px solid var(--border);
+}
+.faq-q {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 22px 0; cursor: pointer;
+  font-size: 14px; font-weight: 600; gap: 20px;
+  transition: color .2s;
+}
+.faq-q:hover { color: var(--teal); }
+.faq-icon {
+  font-family: var(--mono); font-size: 16px; color: var(--muted);
+  flex-shrink: 0; width: 24px; text-align: center;
+  transition: transform .3s;
+}
+.faq-item.open .faq-icon { transform: rotate(45deg); color: var(--teal); }
+.faq-a {
+  max-height: 0; overflow: hidden;
+  transition: max-height .4s cubic-bezier(.4,0,.2,1);
+}
+.faq-a-inner {
+  font-size: 13.5px; color: var(--muted); line-height: 1.75;
+  padding-bottom: 22px; font-family: var(--mono);
+}
+.faq-a-inner em { color: var(--teal); font-style: normal; }
+
+/* ── TERMINAL CTA ── */
+.cta-term {
+  padding: 80px clamp(20px,5vw,80px);
+  position: relative; z-index: 1;
+}
+.cta-inner {
+  max-width: 800px; margin: 0 auto;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden;
+  box-shadow: 0 0 80px rgba(0,212,180,.05);
+}
+.cta-term-header {
+  background: var(--bg3); border-bottom: 1px solid var(--border);
+  padding: 14px 20px; display: flex; align-items: center; gap: 8px;
+}
+.cta-body { padding: 40px 40px 44px; }
+.cta-cmd-line {
+  font-family: var(--mono); font-size: 14px;
+  color: var(--muted); margin-bottom: 8px;
+}
+.cta-cmd-line .cp { color: var(--teal); }
+.cta-cmd-line .ct { color: var(--text); }
+
+.cta-title {
+  font-size: clamp(24px,3vw,36px); font-weight: 800;
+  letter-spacing: -1px; color: var(--white); margin: 20px 0 10px;
+}
+.cta-title .t { color: var(--teal); }
+.cta-sub { font-size: 14px; color: var(--muted); margin-bottom: 32px; }
+
+.cta-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+.btn-term {
+  font-family: var(--mono); font-size: 13px; font-weight: 700;
+  padding: 14px 28px; border-radius: 8px; border: none; cursor: pointer;
+  transition: all .2s; display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-term.primary {
+  background: var(--teal); color: var(--bg);
+}
+.btn-term.primary::before { content: '$ '; opacity: .5; }
+.btn-term.primary:hover { background: var(--green); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,212,180,.2); }
+.btn-term.ghost {
+  background: transparent; border: 1px solid var(--border); color: var(--muted);
+}
+.btn-term.ghost:hover { border-color: var(--teal); color: var(--teal); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--bg2); border-top: 1px solid var(--border);
+  padding: 40px clamp(20px,5vw,80px);
+  position: relative; z-index: 1;
+}
+.footer-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 20px;
+}
+.footer-logo { font-size: 18px; font-weight: 800; }
+.footer-logo span { color: var(--teal); }
+.footer-links { display: flex; gap: 24px; }
+.footer-links a { font-size: 13px; color: var(--muted); transition: color .2s; }
+.footer-links a:hover { color: var(--text); }
+.footer-copy { font-size: 12px; color: var(--muted); font-family: var(--mono); }
+
+/* ── MOBILE ── */
+@media (max-width: 840px) {
+  .plans-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .diff-table th:nth-child(3), .diff-table td:nth-child(3) { display: none; }
+}
+@media (max-width: 560px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .diff-table th:nth-child(2), .diff-table td:nth-child(2) { display: none; }
+  .cta-body { padding: 28px 24px 32px; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="matrix-canvas"></canvas>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-back">cd ~/botready</a>
+    <div class="nav-logo">Bot<span>Ready</span></div>
+    <button class="nav-cta" onclick="openModal('Pro')">Prova gratis →</button>
+  </div>
+  <div class="nav-progress" id="np"></div>
+</nav>
+
+<!-- HERO TERMINAL -->
+<section class="hero-terminal">
+  <div class="term-window">
+    <div class="term-header">
+      <div class="term-dot r"></div>
+      <div class="term-dot y"></div>
+      <div class="term-dot g"></div>
+      <span class="term-title">botready — pricing — 80×30</span>
+    </div>
+    <div class="term-body" id="term-body">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
+  <div class="hero-sub-line">
+    <div class="glitch-title" data-text="Scegli il tuo piano.">
+      Scegli il tuo <span class="glitch-teal">piano.</span>
+    </div>
+    <p class="hero-sub-desc">Nessun contratto · Setup in 24h · Cancelli con un messaggio</p>
+  </div>
+</section>
+
+<!-- PLAN CARDS -->
+<section class="plans-section">
+  <div class="section-prompt">
+    <span class="sp">~/botready</span> <span class="sc">$ ls -la plans/</span>
+  </div>
+  <div class="plans-grid">
+
+    <!-- BASE -->
+    <div class="plan-card base">
+      <div class="card-header">
+        <div class="card-dot" style="background:#3b82f6"></div>
+        <div class="card-dot" style="background:#1d4ed8;opacity:.4"></div>
+        <div class="card-dot" style="background:#1e3a8a;opacity:.2"></div>
+        <span class="card-tab base">base.conf</span>
+      </div>
+      <div class="card-body">
+        <div class="plan-type">// Piano Base</div>
+        <div class="plan-price-wrap">
+          <span class="plan-sym">€</span>
+          <span class="plan-amount">49</span>
+        </div>
+        <div class="plan-per"># al mese · IVA inclusa · nessun contratto</div>
+        <ul class="plan-feats">
+          <li class="plan-feat on"><span class="feat-icon yes">✓</span>1 canale (Telegram o WhatsApp)</li>
+          <li class="plan-feat on"><span class="feat-icon yes">✓</span>Fino a 500 messaggi/mese</li>
+          <li class="plan-feat on"><span class="feat-icon yes">✓</span>5 FAQ personalizzate</li>
+          <li class="plan-feat on"><span class="feat-icon yes">✓</span>Setup in 48 ore</li>
+          <li class="plan-feat on"><span class="feat-icon yes">✓</span>Supporto email</li>
+          <li class="plan-feat"><span class="feat-icon no">✗</span><span style="opacity:.35">Aggiornamenti inclusi</span></li>
+          <li class="plan-feat"><span class="feat-icon no">✗</span><span style="opacity:.35">Report mensile</span></li>
+        </ul>
+        <button class="plan-cta-btn" onclick="openModal('Base')">init base</button>
+      </div>
+    </div>
+
+    <!-- PRO -->
+    <div class="plan-card pro">
+      <div class="plan-badge-featured">// più scelto</div>
+      <div class="card-header">
+        <div class="card-dot" style="background:#00d4b4"></div>
+        <div class="card-dot" style="background:#00a896;opacity:.5"></div>
+        <div class="card-dot" style="background:#007a6e;opacity:.3"></div>
+        <span class="card-tab pro">pro.conf</span>
+      </div>
+      <div class="card-body">
+        <div class="plan-type">// Piano Pro</div>
+        <div class="plan-price-wrap">
+          <span class="plan-sym">€</span>
+          <span class="plan-amount">99</span>
+        </div>
+        <div class="plan-per"># al mese · IVA inclusa · nessun contratto</div>
+        <ul class="plan-feats">
+          <li class="plan-feat on"><span class="feat-icon yes">✓</span>2 canali (Telegram + WhatsApp)</li>
+          <li class="plan-feat on"><span class="feat-icon yes">✓</span>Messaggi illimitati</li>
+          <li class="plan-feat on"><span class="feat-icon yes">✓</span>20 FAQ personalizzate</li>
+          <li class="plan-feat on"><span class="feat-icon yes">✓</span>Setup in 24 ore</li>
+          <li class="plan-feat on"><span class="feat-icon yes">✓</span>Aggiornamenti inclusi</li>
+          <li class="plan-feat on"><span class="feat-icon yes">✓</span>Report mensile</li>
+          <li class="plan-feat on"><span class="feat-icon yes">✓</span>Personalità AI su misura</li>
+        </ul>
+        <button class="plan-cta-btn" onclick="openModal('Pro')">init pro</button>
+      </div>
+    </div>
+
+    <!-- BUSINESS -->
+    <div class="plan-card biz">
+      <div class="card-header">
+        <div class="card-dot" style="background:#a78bfa"></div>
+        <div class="card-dot" style="background:#7c3aed;opacity:.5"></div>
+        <div class="card-dot" style="background:#4c1d95;opacity:.3"></div>
+        <span class="card-tab biz">business.conf</span>
+      </div>
+      <div class="card-body">
+        <div class="plan-type">// Piano Business</div>
+        <div class="plan-price-wrap">
+          <span class="plan-sym">€</span>
+          <span class="plan-amount" style="background:linear-gradient(135deg,#a78bfa,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">199</span>
+        </div>
+        <div class="plan-per"># al mese · IVA inclusa · nessun contratto</div>
+        <ul class="plan-feats">
+          <li class="plan-feat on"><span class="feat-icon yes">✓</span>Multi-canale illimitato</li>
+          <li class="plan-feat on"><span class="feat-icon yes">✓</span>Messaggi illimitati</li>
+          <li class="plan-feat on"><span class="feat-icon yes">✓</span>FAQ illimitate</li>
+          <li class="plan-feat on"><span class="feat-icon yes">✓</span>Setup in 24 ore</li>
+          <li class="plan-feat on"><span class="feat-icon yes">✓</span>Aggiornamenti prioritari</li>
+          <li class="plan-feat on"><span class="feat-icon yes">✓</span>Report avanzato settimanale</li>
+          <li class="plan-feat on"><span class="feat-icon yes">✓</span>Fino a 3 bot distinti</li>
+        </ul>
+        <button class="plan-cta-btn" onclick="openModal('Business')" style="border-color:rgba(167,139,250,.3)" onmouseover="this.style.borderColor='#a78bfa';this.style.color='#a78bfa'" onmouseout="this.style.borderColor='rgba(167,139,250,.3)';this.style.color=''">init business</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DIFF TABLE -->
+<section class="diff-section">
+  <div class="diff-inner">
+    <div class="section-prompt">
+      <span class="sp">~/botready</span> <span class="sc">$ diff base.conf pro.conf business.conf</span>
+    </div>
+    <table class="diff-table">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th class="col-base">Base · €49</th>
+          <th class="col-pro">Pro · €99</th>
+          <th class="col-biz">Business · €199</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Canali supportati</td><td class="dc-yes">1 (Telegram o WA)</td><td class="dc-yes">2 (Telegram + WA)</td><td class="dc-yes2">Illimitati</td></tr>
+        <tr><td>Messaggi/mese</td><td class="dc-partial">500</td><td class="dc-yes">Illimitati</td><td class="dc-yes2">Illimitati</td></tr>
+        <tr><td>FAQ personalizzate</td><td class="dc-yes">5</td><td class="dc-yes">20</td><td class="dc-yes2">Illimitate</td></tr>
+        <tr><td>Tempo setup</td><td class="dc-partial">48h</td><td class="dc-yes">24h</td><td class="dc-yes2">24h</td></tr>
+        <tr><td>Personalità AI custom</td><td class="dc-no">—</td><td class="dc-yes">✓</td><td class="dc-yes2">✓</td></tr>
+        <tr><td>Aggiornamenti inclusi</td><td class="dc-no">—</td><td class="dc-yes">✓ standard</td><td class="dc-yes2">✓ prioritari</td></tr>
+        <tr><td>Report analytics</td><td class="dc-no">—</td><td class="dc-yes">Mensile</td><td class="dc-yes2">Settimanale</td></tr>
+        <tr><td>Bot distinti</td><td>1</td><td>1</td><td class="dc-yes2">Fino a 3</td></tr>
+        <tr><td>Supporto</td><td>Email</td><td class="dc-yes">Priorità media</td><td class="dc-yes2">Priorità alta</td></tr>
+        <tr><td>Contratto minimo</td><td class="dc-yes">Nessuno</td><td class="dc-yes">Nessuno</td><td class="dc-yes2">Nessuno</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats-section">
+  <div class="section-prompt">
+    <span class="sp">~/botready</span> <span class="sc">$ cat metrics.log | tail -4</span>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-box">
+      <div class="stat-label">uptime</div>
+      <div class="stat-value" id="sv-1">99.9%</div>
+      <div class="stat-desc">disponibilità garantita del bot</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">response_time</div>
+      <div class="stat-value" id="sv-2">&lt;2s</div>
+      <div class="stat-desc">risposta media ai messaggi</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">setup_time</div>
+      <div class="stat-value" id="sv-3">24h</div>
+      <div class="stat-desc">dal pagamento al bot attivo</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">exit_cost</div>
+      <div class="stat-value" id="sv-4">€0</div>
+      <div class="stat-desc">per disdire, in qualsiasi momento</div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section">
+  <div class="section-prompt">
+    <span class="sp">~/botready</span> <span class="sc">$ grep -i "faq" docs/*.md</span>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      Posso cambiare piano in un secondo momento?
+      <span class="faq-icon">+</span>
+    </div>
+    <div class="faq-a"><div class="faq-a-inner">Sì. Un messaggio e attiviamo il nuovo piano dal mese successivo. Zero penali, zero costi di upgrade o downgrade.</div></div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      Come funziona la cancellazione?
+      <span class="faq-icon">+</span>
+    </div>
+    <div class="faq-a"><div class="faq-a-inner">Un messaggio WhatsApp o email, e il bot si spegne a fine mese corrente. <em>Nessun preavviso, nessun costo aggiuntivo, nessuna clausola.</em></div></div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      Cosa succede se supero i 500 messaggi/mese (Base)?
+      <span class="faq-icon">+</span>
+    </div>
+    <div class="faq-a"><div class="faq-a-inner">Ti avvisiamo prima di raggiungere il limite. Puoi passare al piano Pro o attendere il mese successivo. Il bot non si blocca di colpo senza preavviso.</div></div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      Il bot risponde anche di notte?
+      <span class="faq-icon">+</span>
+    </div>
+    <div class="faq-a"><div class="faq-a-inner">Sì, 24/7. Il bot non dorme. <em>Uptime garantito 99.9%</em> — risponde anche alle 3 di notte quando il cliente cerca informazioni sull'orario o una prenotazione.</div></div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      Posso avere il bot su WhatsApp E Telegram?
+      <span class="faq-icon">+</span>
+    </div>
+    <div class="faq-a"><div class="faq-a-inner">Con il piano <em>Pro</em> o <em>Business</em> sì — entrambi i canali inclusi nello stesso prezzo. Con il piano Base puoi scegliere uno dei due.</div></div>
+  </div>
+</section>
+
+<!-- TERMINAL CTA -->
+<section class="cta-term">
+  <div class="cta-inner">
+    <div class="cta-term-header">
+      <div class="term-dot r"></div>
+      <div class="term-dot y"></div>
+      <div class="term-dot g"></div>
+      <span class="term-title">botready-init — bash</span>
+    </div>
+    <div class="cta-body">
+      <div class="cta-cmd-line"><span class="cp">botready@system</span>:~$ <span class="ct">./start.sh --plan=pro --trial=true</span></div>
+      <div class="cta-cmd-line" style="color:var(--teal);margin-top:6px">✓ Bot configurato · Setup gratuito · Prima settimana su di noi</div>
+      <h2 class="cta-title">Inizia oggi.<br>Il bot va <span class="t">live in 24 ore.</span></h2>
+      <p class="cta-sub">Nessuna carta di credito richiesta per il setup. Paghi solo quando il bot è attivo.</p>
+      <div class="cta-buttons">
+        <button class="btn-term primary" onclick="openModal('Pro')">init --plan=pro</button>
+        <button class="btn-term ghost" onclick="openModal('Base')">init --plan=base</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">Bot<span>Ready</span></div>
+    <nav class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="https://botsocial-mentis.netlify.app" target="_blank" style="color:var(--teal)">BotSocial</a>
+      <a href="https://mentis-digital-site.netlify.app" target="_blank">Mentis Digital</a>
+    </nav>
+    <div class="footer-copy">© 2026 BotReady // Mentis Digital</div>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div id="modal" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.8);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:24px">
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:40px clamp(24px,4vw,48px);max-width:460px;width:100%;position:relative;font-family:var(--mono)">
+    <button onclick="document.getElementById('modal').style.display='none'" style="position:absolute;top:16px;right:16px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;font-family:var(--mono)">✕</button>
+    <div style="font-size:11px;color:var(--teal);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">$ botready --init</div>
+    <div style="font-size:20px;font-weight:800;color:var(--white);margin-bottom:6px">Inizia gratis</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:28px">Setup gratuito. Ti contatto entro 2 ore.</p>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <input id="m-nome" type="text" placeholder="nome" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:13px 16px;font-size:13px;color:var(--text);font-family:var(--mono);outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--teal)'" onblur="this.style.borderColor='var(--border)'">
+      <input id="m-wa" type="tel" placeholder="whatsapp (es. 333 1234567)" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:13px 16px;font-size:13px;color:var(--text);font-family:var(--mono);outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--teal)'" onblur="this.style.borderColor='var(--border)'">
+      <select id="m-piano" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:13px 16px;font-size:13px;color:var(--text);font-family:var(--mono);outline:none">
+        <option value="Base">Piano Base — €49/mese</option>
+        <option value="Pro" selected>Piano Pro — €99/mese</option>
+        <option value="Business">Piano Business — €199/mese</option>
+      </select>
+      <button onclick="submitM()" style="background:var(--teal);color:var(--bg);border:none;border-radius:8px;padding:14px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--mono);transition:background .2s" onmouseover="this.style.background='var(--green)'" onmouseout="this.style.background='var(--teal)'">$ send --message → WhatsApp</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── SCROLL PROGRESS ── */
+window.addEventListener('scroll', () => {
+  const p = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  document.getElementById('np').style.width = p + '%';
+});
+
+/* ── MATRIX RAIN ── */
+(function(){
+  const c = document.getElementById('matrix-canvas');
+  const ctx = c.getContext('2d');
+  function resize(){ c.width=innerWidth; c.height=innerHeight; }
+  resize(); window.addEventListener('resize', resize);
+  const chars = '01アイウエオカキ10BOTREADY10';
+  const fs = 14;
+  let cols, drops;
+  function init(){ cols=Math.floor(c.width/fs); drops=Array(cols).fill(1); }
+  init(); window.addEventListener('resize', init);
+  setInterval(function(){
+    ctx.fillStyle='rgba(7,9,15,.04)';
+    ctx.fillRect(0,0,c.width,c.height);
+    ctx.fillStyle='#00d4b4';
+    ctx.font=fs+'px JetBrains Mono, monospace';
+    drops.forEach((y,i)=>{
+      const ch=chars[Math.floor(Math.random()*chars.length)];
+      ctx.fillText(ch, i*fs, y*fs);
+      if(y*fs>c.height && Math.random()>.975) drops[i]=0;
+      drops[i]++;
+    });
+  }, 50);
+})();
+
+/* ── TERMINAL TYPEWRITER ── */
+(function(){
+  const body = document.getElementById('term-body');
+  const lines = [
+    { t: 'prompt', text: 'botready@system:~$ ./pricing --load' },
+    { t: 'ok', text: '✓ Loading pricing engine...', delay: 400 },
+    { t: 'ok', text: '✓ Connected to billing API', delay: 600 },
+    { t: 'muted', text: '', delay: 200 },
+    { t: 'muted', text: '┌─────────────────────────────────────────────┐', delay: 100 },
+    { t: 'muted', text: '│          BOTREADY — PIANI DISPONIBILI       │', delay: 0 },
+    { t: 'muted', text: '├─────────────┬──────────┬────────────────────┤', delay: 0 },
+    { t: 'muted', text: '│ Piano       │ Prezzo   │ Canali             │', delay: 0 },
+    { t: 'muted', text: '├─────────────┼──────────┼────────────────────┤', delay: 0 },
+    { t: 'base', text: '│ Base        │ €49/mese │ 1 (Telegram o WA)  │', delay: 150 },
+    { t: 'pro', text:  '│ Pro         │ €99/mese │ 2 (Telegram + WA)  │', delay: 200 },
+    { t: 'biz', text:  '│ Business    │€199/mese │ Multi-canale       │', delay: 200 },
+    { t: 'muted', text: '└─────────────┴──────────┴────────────────────┘', delay: 100 },
+    { t: 'muted', text: '', delay: 200 },
+    { t: 'ok', text: '✓ Nessun contratto · Setup in 24h · Cancella gratis', delay: 200 },
+    { t: 'prompt', text: 'botready@system:~$ █', delay: 400 },
+  ];
+
+  const colorMap = {
+    prompt: 'var(--teal)', ok: 'var(--green)',
+    muted: 'var(--muted)', base: '#60a5fa',
+    pro: 'var(--teal)', biz: '#a78bfa',
+  };
+
+  let idx = 0;
+  function nextLine(){
+    if(idx >= lines.length) return;
+    const l = lines[idx++];
+    const span = document.createElement('span');
+    span.className = 'term-line';
+    span.style.color = colorMap[l.t] || 'var(--text)';
+    span.textContent = l.text;
+    body.appendChild(span);
+    body.scrollTop = body.scrollHeight;
+    setTimeout(nextLine, l.delay || 80);
+  }
+  setTimeout(nextLine, 600);
+})();
+
+/* ── FAQ ── */
+function toggleFaq(btn){
+  const item = btn.parentElement;
+  const a = item.querySelector('.faq-a');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i=>{
+    i.classList.remove('open');
+    i.querySelector('.faq-a').style.maxHeight='0';
+  });
+  if(!isOpen){
+    item.classList.add('open');
+    a.style.maxHeight = a.scrollHeight + 'px';
+  }
+}
+
+/* ── MODAL ── */
+function openModal(plan){
+  const sel = document.getElementById('m-piano');
+  if(sel) sel.value = plan;
+  document.getElementById('modal').style.display='flex';
+}
+function submitM(){
+  const nome = document.getElementById('m-nome').value.trim();
+  const wa   = document.getElementById('m-wa').value.trim();
+  const piano= document.getElementById('m-piano').value;
+  if(!nome||!wa){alert('Inserisci nome e WhatsApp.');return;}
+  const msg=`Ciao! Sono ${nome}, sono interessato al Piano ${piano} di BotReady. Il mio WhatsApp è ${wa}.`;
+  window.open(`https://wa.me/393XXXXXXXXX?text=${encodeURIComponent(msg)}`,'_blank');
+  document.getElementById('modal').style.display='none';
+}
+document.getElementById('modal').addEventListener('click',function(e){ if(e.target===this) this.style.display='none'; });
+</script>
+</body>
+</html>

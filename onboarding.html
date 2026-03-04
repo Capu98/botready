@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BotReady — Configura il tuo bot</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --bg:     #07090f;
+  --bg2:    #0c1120;
+  --bg3:    #111827;
+  --border: #1a2540;
+  --teal:   #00d4b4;
+  --green:  #10d48e;
+  --amber:  #f59e0b;
+  --red:    #f43f5e;
+  --text:   #e2ecf5;
+  --muted:  #5a7090;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 40px 20px;
+}
+
+/* ── HEADER ── */
+.top-logo {
+  font-size: 22px; font-weight: 800; margin-bottom: 40px;
+  color: var(--text);
+}
+.top-logo span { color: var(--teal); }
+
+/* ── CARD ── */
+.card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 24px; padding: clamp(32px, 5vw, 48px);
+  width: 100%; max-width: 620px;
+}
+
+/* ── PROGRESS ── */
+.progress-wrap { margin-bottom: 36px; }
+.progress-bar-bg {
+  height: 4px; background: var(--border);
+  border-radius: 4px; overflow: hidden; margin-bottom: 12px;
+}
+.progress-bar-fill {
+  height: 100%; border-radius: 4px;
+  background: linear-gradient(90deg, var(--teal), var(--green));
+  transition: width .4s ease;
+}
+.progress-meta {
+  display: flex; justify-content: space-between;
+  font-size: 12px; color: var(--muted);
+}
+.progress-step { font-weight: 600; color: var(--teal); }
+
+/* ── STEP ── */
+.step { display: none; animation: fadeIn .25s ease; }
+.step.active { display: block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+.step-icon { font-size: 40px; margin-bottom: 16px; }
+.step-title {
+  font-size: 24px; font-weight: 800; letter-spacing: -.5px;
+  margin-bottom: 8px;
+}
+.step-sub { font-size: 14px; color: var(--muted); margin-bottom: 32px; line-height: 1.6; }
+
+/* ── FORM ELEMENTS ── */
+.field { margin-bottom: 20px; }
+.field label {
+  display: block; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .8px;
+  color: var(--muted); margin-bottom: 7px;
+}
+.field input, .field select, .field textarea {
+  width: 100%; background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px 16px;
+  color: var(--text); font-family: inherit; font-size: 14px;
+  outline: none; transition: border-color .2s;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--teal); }
+.field textarea { resize: vertical; min-height: 70px; }
+.field select { cursor: pointer; }
+
+.field-hint { font-size: 11px; color: var(--muted); margin-top: 5px; }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+/* ── FAQ LIST ── */
+.faq-list-build { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+
+.faq-row {
+  display: flex; gap: 8px; align-items: flex-start;
+}
+
+.faq-row input {
+  flex: 1; background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 14px; color: var(--text);
+  font-family: inherit; font-size: 13px; outline: none; transition: border-color .2s;
+}
+.faq-row input:focus { border-color: var(--teal); }
+
+.faq-del {
+  background: none; border: 1px solid var(--border); color: var(--muted);
+  width: 36px; height: 38px; border-radius: 8px; cursor: pointer;
+  font-size: 16px; transition: all .2s; flex-shrink: 0; display: flex;
+  align-items: center; justify-content: center;
+}
+.faq-del:hover { border-color: var(--red); color: var(--red); }
+
+.add-faq-btn {
+  background: none; border: 1px dashed var(--border); color: var(--muted);
+  font-family: inherit; font-size: 13px; padding: 9px 16px;
+  border-radius: 8px; cursor: pointer; width: 100%; transition: all .2s;
+}
+.add-faq-btn:hover { border-color: var(--teal); color: var(--teal); }
+
+/* ── TONE CHIPS ── */
+.tone-options { display: flex; flex-wrap: wrap; gap: 10px; }
+.tone-chip {
+  padding: 9px 18px; border-radius: 20px; border: 1px solid var(--border);
+  background: var(--bg3); color: var(--muted); font-size: 13px;
+  cursor: pointer; transition: all .2s; font-family: inherit;
+}
+.tone-chip.selected { border-color: var(--teal); color: var(--teal); background: rgba(0,212,180,.07); }
+
+/* ── CHANNEL CARDS ── */
+.channel-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.channel-card {
+  border: 2px solid var(--border); border-radius: 14px; padding: 18px;
+  cursor: pointer; transition: all .2s; background: var(--bg3);
+  display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;
+}
+.channel-card:hover { border-color: rgba(0,212,180,.4); }
+.channel-card.selected { border-color: var(--teal); background: rgba(0,212,180,.06); }
+.channel-icon { font-size: 32px; }
+.channel-name { font-size: 14px; font-weight: 600; }
+.channel-sub  { font-size: 11px; color: var(--muted); }
+
+/* ── SUMMARY ── */
+.summary { background: var(--bg3); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+.summary-row { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.summary-row:last-child { border-bottom: none; }
+.summary-label { font-size: 12px; color: var(--muted); min-width: 130px; flex-shrink: 0; }
+.summary-value { font-size: 13px; }
+
+/* ── BUTTONS ── */
+.btn-row { display: flex; gap: 12px; margin-top: 32px; align-items: center; }
+
+.btn-next {
+  flex: 1; padding: 14px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--teal), #00a896);
+  color: #07090f; font-weight: 800; font-size: 15px;
+  border: none; cursor: pointer; font-family: inherit;
+  transition: all .2s;
+}
+.btn-next:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,212,180,.2); }
+.btn-next:disabled { opacity: .4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.btn-back {
+  padding: 14px 20px; border-radius: 12px;
+  background: none; border: 1px solid var(--border);
+  color: var(--muted); font-size: 14px; cursor: pointer;
+  font-family: inherit; transition: all .2s;
+}
+.btn-back:hover { border-color: var(--teal); color: var(--teal); }
+
+/* ── SUCCESS ── */
+.success-view { text-align: center; padding: 20px 0; }
+.success-icon { font-size: 64px; margin-bottom: 20px; }
+.success-title { font-size: 26px; font-weight: 800; margin-bottom: 10px; }
+.success-text  { font-size: 15px; color: var(--muted); line-height: 1.7; max-width: 440px; margin: 0 auto; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 480px) {
+  .two-col { grid-template-columns: 1fr; }
+  .channel-options { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- Form nascosto per Netlify -->
+<form name="onboarding" netlify netlify-honeypot="bot-field" hidden>
+  <input type="text" name="biz" /><input type="text" name="nome" />
+  <input type="email" name="email" /><textarea name="dati"></textarea>
+</form>
+
+<div class="top-logo">Bot<span>Ready</span></div>
+
+<div class="card">
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressFill" style="width:16.6%"></div>
+    </div>
+    <div class="progress-meta">
+      <span class="progress-step" id="progressLabel">Passo 1 di 6</span>
+      <span id="progressPct">17%</span>
+    </div>
+  </div>
+
+  <!-- STEP 1: Benvenuto -->
+  <div class="step active" id="step1">
+    <div class="step-icon">👋</div>
+    <h2 class="step-title">Benvenuto in BotReady!</h2>
+    <p class="step-sub">Ci vogliono circa 5 minuti per configurare il tuo bot. Rispondi alle domande e il tuo assistente AI sarà pronto entro 24 ore.</p>
+
+    <div class="field">
+      <label>Nome della tua attività *</label>
+      <input type="text" id="o-biz" placeholder="Es: Pizzeria Da Mario">
+    </div>
+    <div class="two-col">
+      <div class="field">
+        <label>Il tuo nome *</label>
+        <input type="text" id="o-nome" placeholder="Mario">
+      </div>
+      <div class="field">
+        <label>Email *</label>
+        <input type="email" id="o-email" placeholder="mario@esempio.it">
+      </div>
+    </div>
+    <div class="field">
+      <label>Tipo di attività *</label>
+      <select id="o-tipo">
+        <option value="">Seleziona...</option>
+        <option>Ristorante / Bar / Pizzeria</option>
+        <option>Studio medico / Dentista</option>
+        <option>B&B / Hotel / Affitti brevi</option>
+        <option>Negozio / E-commerce</option>
+        <option>Parrucchiere / Estetista</option>
+        <option>Studio professionale</option>
+        <option>Altro</option>
+      </select>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-next" onclick="goNext(1)">Avanti →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: Orari -->
+  <div class="step" id="step2">
+    <div class="step-icon">🕐</div>
+    <h2 class="step-title">Orari e disponibilità</h2>
+    <p class="step-sub">Il bot risponderà 24/7, ma deve sapere quando sei aperto per dare informazioni corrette ai clienti.</p>
+
+    <div class="two-col">
+      <div class="field">
+        <label>Apertura mattina</label>
+        <input type="time" id="o-open1" value="09:00">
+      </div>
+      <div class="field">
+        <label>Chiusura mattina</label>
+        <input type="time" id="o-close1" value="13:00">
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="field">
+        <label>Apertura pomeriggio</label>
+        <input type="time" id="o-open2" value="15:00">
+      </div>
+      <div class="field">
+        <label>Chiusura pomeriggio</label>
+        <input type="time" id="o-close2" value="20:00">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Giorni di apertura</label>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px" id="giorni-wrap">
+        <button class="tone-chip selected" data-day="Lun" onclick="toggleDay(this)">Lun</button>
+        <button class="tone-chip selected" data-day="Mar" onclick="toggleDay(this)">Mar</button>
+        <button class="tone-chip selected" data-day="Mer" onclick="toggleDay(this)">Mer</button>
+        <button class="tone-chip selected" data-day="Gio" onclick="toggleDay(this)">Gio</button>
+        <button class="tone-chip selected" data-day="Ven" onclick="toggleDay(this)">Ven</button>
+        <button class="tone-chip" data-day="Sab" onclick="toggleDay(this)">Sab</button>
+        <button class="tone-chip" data-day="Dom" onclick="toggleDay(this)">Dom</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Note sugli orari (facoltativo)</label>
+      <input type="text" id="o-orari-note" placeholder="Es: chiusi ad agosto, aperto solo la mattina il sabato...">
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goBack(2)">← Indietro</button>
+      <button class="btn-next" onclick="goNext(2)">Avanti →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: FAQ -->
+  <div class="step" id="step3">
+    <div class="step-icon">💬</div>
+    <h2 class="step-title">Le domande dei tuoi clienti</h2>
+    <p class="step-sub">Quali domande ricevi più spesso? Scrivi almeno 3 domande tipiche e come vuoi che il bot risponda.</p>
+
+    <div class="faq-list-build" id="faqList">
+      <div class="faq-row">
+        <input type="text" placeholder="Es: Quali sono gli orari di apertura?">
+        <button class="faq-del" onclick="removeFaq(this)">×</button>
+      </div>
+      <div class="faq-row">
+        <input type="text" placeholder="Es: Avete posti disponibili stasera?">
+        <button class="faq-del" onclick="removeFaq(this)">×</button>
+      </div>
+      <div class="faq-row">
+        <input type="text" placeholder="Es: Dove si trovano / come si prenota?">
+        <button class="faq-del" onclick="removeFaq(this)">×</button>
+      </div>
+    </div>
+
+    <button class="add-faq-btn" onclick="addFaq()">+ Aggiungi domanda</button>
+
+    <div class="field" style="margin-top:20px">
+      <label>Informazioni extra da includere (facoltativo)</label>
+      <textarea id="o-extra" placeholder="Es: indirizzo, come raggiungerci, offerte speciali, metodi di pagamento accettati..."></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goBack(3)">← Indietro</button>
+      <button class="btn-next" onclick="goNext(3)">Avanti →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: Personalità -->
+  <div class="step" id="step4">
+    <div class="step-icon">🎭</div>
+    <h2 class="step-title">Personalità del bot</h2>
+    <p class="step-sub">Come vuoi che parli il tuo assistente? Scegli il tono e dagli un nome — così sembrerà davvero parte del tuo team.</p>
+
+    <div class="field">
+      <label>Nome del bot</label>
+      <input type="text" id="o-botname" placeholder="Es: Sofia, Luca, Assistente Mario...">
+      <div class="field-hint">Lascia vuoto per usare "Assistente di [Nome Attività]"</div>
+    </div>
+
+    <div class="field">
+      <label>Tono di comunicazione *</label>
+      <div class="tone-options" id="toneOptions">
+        <button class="tone-chip" onclick="selectTone(this)">😊 Amichevole e caldo</button>
+        <button class="tone-chip" onclick="selectTone(this)">👔 Professionale e formale</button>
+        <button class="tone-chip" onclick="selectTone(this)">😎 Informale e diretto</button>
+        <button class="tone-chip" onclick="selectTone(this)">🎯 Preciso e conciso</button>
+        <button class="tone-chip" onclick="selectTone(this)">✨ Entusiasta e positivo</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Lingue (oltre all'italiano)</label>
+      <div class="tone-options" id="langOptions">
+        <button class="tone-chip" onclick="toggleLang(this)">🇬🇧 Inglese</button>
+        <button class="tone-chip" onclick="toggleLang(this)">🇫🇷 Francese</button>
+        <button class="tone-chip" onclick="toggleLang(this)">🇩🇪 Tedesco</button>
+        <button class="tone-chip" onclick="toggleLang(this)">🇪🇸 Spagnolo</button>
+      </div>
+      <div class="field-hint">Il bot risponde sempre in italiano. Seleziona lingue aggiuntive se hai clienti stranieri.</div>
+    </div>
+
+    <div class="field">
+      <label>Messaggio di benvenuto personalizzato (facoltativo)</label>
+      <textarea id="o-welcome" placeholder="Es: Ciao! Sono Sofia, l'assistente di Pizzeria Da Mario 🍕 Come posso aiutarti?"></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goBack(4)">← Indietro</button>
+      <button class="btn-next" onclick="goNext(4)">Avanti →</button>
+    </div>
+  </div>
+
+  <!-- STEP 5: Canale -->
+  <div class="step" id="step5">
+    <div class="step-icon">📱</div>
+    <h2 class="step-title">Su quale canale?</h2>
+    <p class="step-sub">Scegli dove vuoi che il tuo bot risponda ai clienti. Puoi scegliere uno o entrambi (disponibile dal piano Pro).</p>
+
+    <div class="channel-options">
+      <div class="channel-card" id="ch-telegram" onclick="toggleChannel('telegram')">
+        <div class="channel-icon">✈️</div>
+        <div class="channel-name">Telegram</div>
+        <div class="channel-sub">Consigliato — setup rapido</div>
+      </div>
+      <div class="channel-card" id="ch-whatsapp" onclick="toggleChannel('whatsapp')">
+        <div class="channel-icon">📗</div>
+        <div class="channel-name">WhatsApp</div>
+        <div class="channel-sub">Richiede WhatsApp Business</div>
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:24px" id="telegramField" style="display:none">
+      <label>Username Telegram (per ricevere il bot)</label>
+      <input type="text" id="o-tg" placeholder="@il_tuo_username">
+      <div class="field-hint">Usa @username — ti mandiamo il link del bot direttamente su Telegram</div>
+    </div>
+
+    <div class="field" id="whatsappField" style="display:none">
+      <label>Numero WhatsApp Business</label>
+      <input type="tel" id="o-wa" placeholder="+39 320 000 0000">
+      <div class="field-hint">Deve essere un numero WhatsApp Business già attivo</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goBack(5)">← Indietro</button>
+      <button class="btn-next" onclick="goNext(5)">Avanti →</button>
+    </div>
+  </div>
+
+  <!-- STEP 6: Riepilogo -->
+  <div class="step" id="step6">
+    <div class="step-icon">✅</div>
+    <h2 class="step-title">Tutto pronto!</h2>
+    <p class="step-sub">Controlla i dati e invia. Configureremo il tuo bot entro 24 ore.</p>
+
+    <div class="summary" id="summaryBox"></div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goBack(6)">← Modifica</button>
+      <button class="btn-next" id="submitBtn" onclick="submitOnboarding()">🚀 Conferma e invia</button>
+    </div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="step" id="stepSuccess">
+    <div class="success-view">
+      <div class="success-icon">🎉</div>
+      <div class="success-title">Bot in configurazione!</div>
+      <p class="success-text">
+        Abbiamo ricevuto tutto. Il tuo assistente AI sarà pronto entro <strong>24 ore</strong>.<br><br>
+        Ti contatteremo su <strong id="confirmContact">Telegram</strong> con il link del tuo bot e le istruzioni per attivarlo.
+      </p>
+    </div>
+  </div>
+
+</div><!-- .card -->
+
+<script>
+let currentStep = 1;
+const totalSteps = 6;
+
+// ── Navigation ──────────────────────────────────────────────────────────────
+
+function goNext(from) {
+  if (!validateStep(from)) return;
+  if (from === totalSteps) { submitOnboarding(); return; }
+  if (from === 5) buildSummary();
+  setStep(from + 1);
+}
+
+function goBack(from) {
+  setStep(from - 1);
+}
+
+function setStep(n) {
+  document.querySelector('.step.active')?.classList.remove('active');
+  document.getElementById('step' + n)?.classList.add('active');
+  currentStep = n;
+  updateProgress(n);
+}
+
+function updateProgress(n) {
+  const pct = Math.round((n / totalSteps) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `Passo ${n} di ${totalSteps}`;
+  document.getElementById('progressPct').textContent = pct + '%';
+}
+
+// ── Validation ───────────────────────────────────────────────────────────────
+
+function validateStep(n) {
+  if (n === 1) {
+    const biz  = v('o-biz');
+    const nome = v('o-nome');
+    const mail = v('o-email');
+    const tipo = v('o-tipo');
+    if (!biz || !nome || !mail || !tipo) { alert('Compila tutti i campi obbligatori.'); return false; }
+  }
+  if (n === 3) {
+    const faqs = getFaqs();
+    if (faqs.filter(f => f.trim()).length < 1) { alert('Inserisci almeno una domanda frequente.'); return false; }
+  }
+  if (n === 4) {
+    const tone = document.querySelector('#toneOptions .selected');
+    if (!tone) { alert('Scegli un tono di comunicazione.'); return false; }
+  }
+  if (n === 5) {
+    const hasTg = document.getElementById('ch-telegram').classList.contains('selected');
+    const hasWa = document.getElementById('ch-whatsapp').classList.contains('selected');
+    if (!hasTg && !hasWa) { alert('Scegli almeno un canale.'); return false; }
+  }
+  return true;
+}
+
+function v(id) { return (document.getElementById(id)?.value || '').trim(); }
+
+// ── Day toggling ─────────────────────────────────────────────────────────────
+
+function toggleDay(btn) { btn.classList.toggle('selected'); }
+
+// ── Tone/Lang ────────────────────────────────────────────────────────────────
+
+function selectTone(btn) {
+  document.querySelectorAll('#toneOptions .tone-chip').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function toggleLang(btn) { btn.classList.toggle('selected'); }
+
+// ── Channel ──────────────────────────────────────────────────────────────────
+
+function toggleChannel(ch) {
+  const card = document.getElementById('ch-' + ch);
+  card.classList.toggle('selected');
+  document.getElementById('telegramField').style.display =
+    document.getElementById('ch-telegram').classList.contains('selected') ? 'block' : 'none';
+  document.getElementById('whatsappField').style.display =
+    document.getElementById('ch-whatsapp').classList.contains('selected') ? 'block' : 'none';
+}
+
+// ── FAQ ──────────────────────────────────────────────────────────────────────
+
+function addFaq() {
+  const list = document.getElementById('faqList');
+  if (list.children.length >= 10) { alert('Massimo 10 domande'); return; }
+  const row = document.createElement('div');
+  row.className = 'faq-row';
+  row.innerHTML = `<input type="text" placeholder="Scrivi una domanda frequente...">
+                   <button class="faq-del" onclick="removeFaq(this)">×</button>`;
+  list.appendChild(row);
+}
+
+function removeFaq(btn) {
+  const list = document.getElementById('faqList');
+  if (list.children.length > 1) btn.closest('.faq-row').remove();
+}
+
+function getFaqs() {
+  return Array.from(document.querySelectorAll('#faqList input')).map(i => i.value.trim()).filter(Boolean);
+}
+
+// ── Summary ──────────────────────────────────────────────────────────────────
+
+function buildSummary() {
+  const days = Array.from(document.querySelectorAll('#giorni-wrap .selected')).map(b => b.dataset.day).join(', ');
+  const tone = document.querySelector('#toneOptions .selected')?.textContent || '—';
+  const langs = Array.from(document.querySelectorAll('#langOptions .selected')).map(b => b.textContent).join(', ') || 'Solo italiano';
+  const channels = [];
+  if (document.getElementById('ch-telegram').classList.contains('selected')) channels.push('Telegram');
+  if (document.getElementById('ch-whatsapp').classList.contains('selected')) channels.push('WhatsApp');
+
+  const rows = [
+    ['Attività',    v('o-biz') || '—'],
+    ['Referente',   v('o-nome') || '—'],
+    ['Email',       v('o-email') || '—'],
+    ['Orari',       `${v('o-open1')}–${v('o-close1')} / ${v('o-open2')}–${v('o-close2')}`],
+    ['Giorni',      days || '—'],
+    ['Nome bot',    v('o-botname') || 'Auto-generato'],
+    ['Tono',        tone],
+    ['Lingue',      langs],
+    ['Canali',      channels.join(' + ') || '—'],
+    ['FAQ caricate', getFaqs().length + ' domande'],
+  ];
+
+  document.getElementById('summaryBox').innerHTML = rows.map(([l, v]) =>
+    `<div class="summary-row">
+       <span class="summary-label">${l}</span>
+       <span class="summary-value">${v}</span>
+     </div>`
+  ).join('');
+}
+
+// ── Submit ───────────────────────────────────────────────────────────────────
+
+async function submitOnboarding() {
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Invio...';
+
+  const days = Array.from(document.querySelectorAll('#giorni-wrap .selected')).map(b => b.dataset.day);
+  const tone = document.querySelector('#toneOptions .selected')?.textContent || '';
+  const langs = Array.from(document.querySelectorAll('#langOptions .selected')).map(b => b.textContent);
+  const hasTg = document.getElementById('ch-telegram').classList.contains('selected');
+  const hasWa = document.getElementById('ch-whatsapp').classList.contains('selected');
+
+  const payload = {
+    biz:       v('o-biz'),
+    nome:      v('o-nome'),
+    email:     v('o-email'),
+    tipo:      v('o-tipo'),
+    orari: {
+      mattina:     `${v('o-open1')}–${v('o-close1')}`,
+      pomeriggio:  `${v('o-open2')}–${v('o-close2')}`,
+      giorni:      days,
+      note:        v('o-orari-note')
+    },
+    faq:       getFaqs(),
+    extra:     v('o-extra'),
+    bot: {
+      nome:    v('o-botname'),
+      tono:    tone,
+      lingue:  langs,
+      welcome: v('o-welcome')
+    },
+    canali: {
+      telegram:        hasTg,
+      whatsapp:        hasWa,
+      telegramUser:    v('o-tg'),
+      whatsappNumber:  v('o-wa')
+    },
+    ts: new Date().toISOString()
+  };
+
+  // Aggiorna testo di conferma
+  document.getElementById('confirmContact').textContent =
+    hasTg ? 'Telegram' : 'email';
+
+  const isLocal = ['localhost','127.0.0.1'].includes(window.location.hostname);
+
+  // ── 1. Telegram notification via server locale
+  if (isLocal) {
+    try {
+      await fetch('http://localhost:3201/onboarding', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch { /* server non attivo */ }
+  }
+
+  // ── 2. Netlify Forms (quando live)
+  if (!isLocal) {
+    try {
+      const fd = new FormData();
+      fd.append('form-name', 'onboarding');
+      fd.append('biz', payload.biz);
+      fd.append('nome', payload.nome);
+      fd.append('email', payload.email);
+      fd.append('dati', JSON.stringify(payload));
+      await fetch('/', { method: 'POST', body: fd });
+    } catch { /* ignora */ }
+  }
+
+  // ── 3. Salva sempre in localStorage come backup
+  const saved = JSON.parse(localStorage.getItem('botready_onboarding') || '[]');
+  saved.push(payload);
+  localStorage.setItem('botready_onboarding', JSON.stringify(saved));
+
+  // Mostra success
+  document.querySelector('.step.active').classList.remove('active');
+  document.getElementById('stepSuccess').classList.add('active');
+  document.querySelector('.progress-wrap').style.display = 'none';
+}
+
+// ── Pre-fill from URL params ──────────────────────────────────────────────────
+(function() {
+  const p = new URLSearchParams(window.location.search);
+  if (p.get('nome'))  document.getElementById('o-nome').value  = p.get('nome');
+  if (p.get('email')) document.getElementById('o-email').value = p.get('email');
+  if (p.get('biz'))   document.getElementById('o-biz').value   = p.get('biz');
+  if (p.get('tipo'))  document.getElementById('o-tipo').value  = p.get('tipo');
+  if (p.get('piano')) {/* stored for summary */}
+})();
+</script>
+</body>
+</html>

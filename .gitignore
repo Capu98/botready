@@ -1,0 +1,12 @@
+.netlify
+netlify.toml
+leads.json
+onboarding.json
+ricevuta.html
+outreach/
+form-server.py
+generate_chatbot.py
+start.bat
+*.csv
+*.py
+*.bat
