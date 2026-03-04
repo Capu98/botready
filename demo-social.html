@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BotSocial — Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --pink:#e040a0;--purple:#7c3aed;
+  --bg:#07090f;--bg2:#0c1120;--bg3:#111827;
+  --border:#1a2540;--text:#e2ecf5;--muted:#5a7090;
+  --wa-in:#1f2c34;--wa-out:#005c4b;--wa-bg:#0b1418;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;text-align:center;padding:60px 24px;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%, rgba(224,64,160,.12) 0%, rgba(124,58,237,.06) 40%, transparent 70%);
+  position:relative;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(224,64,160,.1);border:1px solid rgba(224,64,160,.3);
+  border-radius:50px;padding:6px 16px;font-size:12px;font-weight:700;
+  color:var(--pink);letter-spacing:.5px;margin-bottom:28px;
+}
+.dot{width:7px;height:7px;background:var(--pink);border-radius:50%;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.hero h1{
+  font-size:clamp(36px,7vw,72px);font-weight:900;letter-spacing:-2.5px;
+  line-height:1.05;margin-bottom:20px;
+}
+.hero h1 em{
+  font-style:normal;
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-sub{font-size:clamp(15px,2.5vw,20px);color:var(--muted);max-width:560px;line-height:1.6;margin-bottom:40px}
+.scroll-hint{
+  position:absolute;bottom:32px;left:50%;transform:translateX(-50%);
+  font-size:12px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:6px;
+  animation:fadeup 2s ease infinite;
+}
+@keyframes fadeup{0%,100%{opacity:.3;transform:translateX(-50%) translateY(0)}50%{opacity:.8;transform:translateX(-50%) translateY(-6px)}}
+
+/* ── SECTION ── */
+.section{padding:80px clamp(24px,5vw,80px);max-width:1100px;margin:0 auto}
+.section-label{font-size:11px;font-weight:800;letter-spacing:2px;color:var(--pink);text-transform:uppercase;margin-bottom:12px}
+.section h2{font-size:clamp(28px,4vw,44px);font-weight:900;letter-spacing:-1.5px;margin-bottom:16px}
+.section-sub{font-size:16px;color:var(--muted);line-height:1.7;max-width:560px;margin-bottom:48px}
+
+/* ── DEMO CONTAINER ── */
+.demo-wrap{
+  display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;
+}
+@media(max-width:700px){.demo-wrap{grid-template-columns:1fr}}
+
+/* ── PHONE MOCKUP ── */
+.phone{
+  background:#1b1f23;border-radius:36px;padding:0;overflow:hidden;
+  box-shadow:0 40px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.06);
+  max-width:340px;margin:0 auto;width:100%;
+}
+.phone-bar{
+  background:#1f2c34;padding:14px 20px;display:flex;align-items:center;gap:12px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.phone-av{
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;
+}
+.phone-name{font-size:14px;font-weight:700;color:#e9edef}
+.phone-status{font-size:11px;color:#8696a0;margin-top:1px}
+.chat{
+  background:var(--wa-bg);padding:16px 14px;min-height:520px;
+  display:flex;flex-direction:column;gap:10px;
+  background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.bubble{
+  max-width:78%;padding:8px 12px;border-radius:8px;font-size:13px;line-height:1.5;
+  opacity:0;transform:translateY(10px);transition:opacity .35s ease,transform .35s ease;
+  position:relative;
+}
+.bubble.show{opacity:1;transform:translateY(0)}
+.bubble.in{
+  background:var(--wa-in);color:#e9edef;align-self:flex-start;border-radius:0 8px 8px 8px;
+}
+.bubble.out{
+  background:var(--wa-out);color:#e9edef;align-self:flex-end;border-radius:8px 0 8px 8px;
+}
+.bubble-time{font-size:10px;color:#8696a0;margin-top:4px;text-align:right}
+.bubble.in .bubble-time{text-align:left}
+
+/* ── PHOTO PLACEHOLDER ── */
+.photo-placeholder{
+  width:200px;height:150px;border-radius:8px;margin-bottom:6px;
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;color:rgba(255,255,255,.9);font-weight:600;
+  text-shadow:0 1px 4px rgba(0,0,0,.3);
+}
+
+.typing{
+  display:flex;gap:4px;align-items:center;padding:12px 14px;
+  background:var(--wa-in);border-radius:0 8px 8px 8px;
+  max-width:70px;align-self:flex-start;
+  opacity:0;transition:opacity .3s ease;
+}
+.typing.show{opacity:1}
+.typing span{width:7px;height:7px;background:#8696a0;border-radius:50%;animation:typedot 1.2s ease infinite}
+.typing span:nth-child(2){animation-delay:.2s}
+.typing span:nth-child(3){animation-delay:.4s}
+@keyframes typedot{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+/* ── FEATURE LIST ── */
+.features{display:flex;flex-direction:column;gap:20px;padding-top:8px}
+.feat{
+  display:flex;gap:16px;align-items:flex-start;
+  opacity:0;transform:translateX(20px);transition:all .4s ease;
+}
+.feat.show{opacity:1;transform:translateX(0)}
+.feat-icon{
+  width:42px;height:42px;border-radius:12px;flex-shrink:0;
+  background:rgba(224,64,160,.12);border:1px solid rgba(224,64,160,.2);
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+}
+.feat-title{font-size:15px;font-weight:700;margin-bottom:4px}
+.feat-desc{font-size:13px;color:var(--muted);line-height:1.5}
+
+/* ── STATS ── */
+.stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
+  margin-top:80px;padding:48px;
+  background:var(--bg2);border-radius:24px;border:1px solid var(--border);
+  text-align:center;
+}
+@media(max-width:600px){.stats{grid-template-columns:1fr;padding:32px 24px}}
+.stat-val{
+  font-size:clamp(36px,5vw,52px);font-weight:900;letter-spacing:-2px;
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.stat-lbl{font-size:13px;color:var(--muted);margin-top:6px;font-weight:600}
+
+/* ── CTA ── */
+.cta-section{
+  text-align:center;padding:80px 24px;
+  background:linear-gradient(180deg,transparent,rgba(224,64,160,.04));
+}
+.cta-section h2{font-size:clamp(28px,4vw,44px);font-weight:900;letter-spacing:-1.5px;margin-bottom:16px}
+.cta-section p{font-size:16px;color:var(--muted);margin-bottom:32px}
+.btn-cta{
+  display:inline-block;background:linear-gradient(135deg,var(--pink),var(--purple));
+  color:#fff;font-weight:800;font-size:16px;padding:16px 40px;border-radius:50px;
+  text-decoration:none;transition:transform .2s,box-shadow .2s;
+  box-shadow:0 8px 32px rgba(224,64,160,.35);
+}
+.btn-cta:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(224,64,160,.5)}
+.footer-brand{margin-top:48px;font-size:13px;color:var(--muted)}
+.footer-brand strong{color:var(--text)}
+
+/* ── REPLAY ── */
+.replay-btn{
+  display:inline-flex;align-items:center;gap:8px;margin-top:16px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  color:var(--muted);font-size:12px;font-weight:600;padding:8px 18px;border-radius:50px;
+  cursor:pointer;transition:all .2s;font-family:inherit;
+}
+.replay-btn:hover{background:rgba(255,255,255,.1);color:var(--text)}
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-badge"><span class="dot"></span> BotSocial — Demo live</div>
+  <h1>I tuoi social<br>si gestiscono <em>da soli.</em></h1>
+  <p class="hero-sub">Guarda come BotSocial trasforma una foto dal rullino in un post perfetto — pronto da pubblicare su Instagram, Facebook e TikTok.</p>
+  <div class="scroll-hint">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4,6 8,10 12,6"/></svg>
+    Scorri per la demo
+  </div>
+</div>
+
+<!-- ── DEMO ── -->
+<div class="section">
+  <div class="section-label">Come funziona</div>
+  <h2>Da una foto a un post perfetto<br>in meno di 60 secondi.</h2>
+  <p class="section-sub">Scatti una foto del tuo lavoro. La invii via WhatsApp. BotSocial genera caption, hashtag e programma il post — tu approvi con un tap.</p>
+
+  <div class="demo-wrap">
+    <!-- PHONE -->
+    <div>
+      <div class="phone">
+        <div class="phone-bar">
+          <div class="phone-av">💇</div>
+          <div>
+            <div class="phone-name">BotSocial</div>
+            <div class="phone-status" id="phone-status">online</div>
+          </div>
+        </div>
+        <div class="chat" id="chat">
+          <div class="bubble out" id="b1">
+            <div class="photo-placeholder">📸 Foto balayage</div>
+            Ecco il balayage di oggi, è venuto benissimo! 💇‍♀️
+            <div class="bubble-time">10:42 ✓✓</div>
+          </div>
+          <div class="typing" id="typing1">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="bubble in" id="b2">
+            Wow, che colore! 🔥 Ecco il post pronto:<br><br>
+            ✨ Balayage miele su base castana — un gioco di luce che valorizza ogni movimento.<br><br>
+            <strong>#balayage #colorspecialist #parrucchieremilano #hairgoals #colormelt</strong>
+            <div class="bubble-time">10:42</div>
+          </div>
+          <div class="bubble in" id="b3">
+            📱 Piattaforme: <strong>Instagram + Facebook</strong><br>
+            📅 Pubblicazione consigliata: <strong>domani alle 18:30</strong><br><br>
+            Approvi o vuoi modificare qualcosa?
+            <div class="bubble-time">10:42</div>
+          </div>
+          <div class="bubble out" id="b4">
+            Perfetto, approva! ✅
+            <div class="bubble-time">10:43 ✓✓</div>
+          </div>
+          <div class="typing" id="typing2">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="bubble in" id="b5">
+            ✅ Post approvato e programmato!<br><br>
+            📅 <strong>Domani, 18:30</strong><br>
+            📱 <strong>Instagram + Facebook</strong><br><br>
+            Ti avviso quando sarà pubblicato. Buon lavoro! 💪
+            <div class="bubble-time">10:43</div>
+          </div>
+          <div class="bubble in" id="b6" style="margin-top:12px;background:rgba(31,44,52,.6);font-size:12px;color:#8696a0">
+            ⏰ Post pubblicato su Instagram e Facebook · Ieri 18:30 · 12 like, 3 commenti
+            <div class="bubble-time">ieri 18:31</div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center">
+        <button class="replay-btn" onclick="replay()">↺ Rivedi la demo</button>
+      </div>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="features">
+      <div class="feat" id="f1">
+        <div class="feat-icon">📸</div>
+        <div>
+          <div class="feat-title">Invii la foto, pensa a tutto lui</div>
+          <div class="feat-desc">Scatti il lavoro finito e lo mandi via WhatsApp. BotSocial genera caption, hashtag e orario di pubblicazione.</div>
+        </div>
+      </div>
+      <div class="feat" id="f2">
+        <div class="feat-icon">🧠</div>
+        <div>
+          <div class="feat-title">Caption nel tuo stile</div>
+          <div class="feat-desc">Il bot impara il tuo tono di voce. Ogni post sembra scritto da te — mai generico, mai robotico.</div>
+        </div>
+      </div>
+      <div class="feat" id="f3">
+        <div class="feat-icon">📅</div>
+        <div>
+          <div class="feat-title">Pubblica al momento giusto</div>
+          <div class="feat-desc">Analizza quando i tuoi follower sono più attivi e programma il post per massimizzare la visibilità.</div>
+        </div>
+      </div>
+      <div class="feat" id="f4">
+        <div class="feat-icon">✅</div>
+        <div>
+          <div class="feat-title">Un tap per approvare</div>
+          <div class="feat-desc">Niente dashboard complicate. Ricevi il post su WhatsApp, lo approvi con un messaggio e parte in automatico.</div>
+        </div>
+      </div>
+      <div class="feat" id="f5">
+        <div class="feat-icon">📊</div>
+        <div>
+          <div class="feat-title">Risultati che si vedono</div>
+          <div class="feat-desc">Più post costanti = più visibilità = più clienti. Il salone che posta regolarmente cresce 3x più veloce.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div>
+      <div class="stat-val" data-target="5">0</div>
+      <div class="stat-lbl">post a settimana, senza sforzo</div>
+    </div>
+    <div>
+      <div class="stat-val" data-target="3" data-suffix="x">0x</div>
+      <div class="stat-lbl">crescita follower media</div>
+    </div>
+    <div>
+      <div class="stat-val" data-target="2">0</div>
+      <div class="stat-lbl">minuti per approvare tutto</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── CTA ── -->
+<div class="cta-section">
+  <h2>Pronto a far crescere<br>il tuo salone?</h2>
+  <p>Setup guidato. Nessuna app da installare. Primi post pronti in 24 ore.</p>
+  <a href="#" class="btn-cta">Scopri BotSocial →</a>
+  <div class="footer-brand">
+    Sviluppato da <a href="https://mentis-digital-site.netlify.app" target="_blank" style="color:var(--pink);text-decoration:none;font-weight:700">Mentis Digital</a>
+  </div>
+</div>
+
+<script>
+/* ── ANIMAZIONE CHAT ── */
+const seq = [
+  { el:'b1',     delay:600  },
+  { el:'typing1',delay:1800, rm:true },
+  { el:'b2',     delay:3200 },
+  { el:'b3',     delay:4400 },
+  { el:'b4',     delay:5800 },
+  { el:'typing2',delay:6600, rm:true },
+  { el:'b5',     delay:8000 },
+  { el:'b6',     delay:9600 },
+];
+const feats = ['f1','f2','f3','f4','f5'];
+
+function runDemo() {
+  seq.forEach(({el, delay, rm}) => {
+    setTimeout(() => {
+      const node = document.getElementById(el);
+      if (!node) return;
+      node.classList.add('show');
+      if (rm) {
+        setTimeout(() => node.classList.remove('show'), 1100);
+      }
+    }, delay);
+  });
+  feats.forEach((id, i) => {
+    setTimeout(() => {
+      document.getElementById(id)?.classList.add('show');
+    }, 3000 + i * 500);
+  });
+}
+
+function replay() {
+  seq.forEach(({el}) => document.getElementById(el)?.classList.remove('show'));
+  feats.forEach(id => document.getElementById(id)?.classList.remove('show'));
+  setTimeout(runDemo, 300);
+}
+
+/* ── COUNTER ANIMATO ── */
+function animateCounters() {
+  document.querySelectorAll('[data-target]').forEach(el => {
+    const target = parseInt(el.dataset.target);
+    const suffix = el.dataset.suffix || '';
+    let current = 0;
+    const step  = target / 40;
+    const timer = setInterval(() => {
+      current = Math.min(current + step, target);
+      el.textContent = Math.round(current) + suffix;
+      if (current >= target) clearInterval(timer);
+    }, 30);
+  });
+}
+
+/* ── INTERSECTION OBSERVER ── */
+const statsEl = document.querySelector('.stats');
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { animateCounters(); io.disconnect(); } });
+}, { threshold: .4 });
+if (statsEl) io.observe(statsEl);
+
+// Avvia la chat dopo 800ms
+setTimeout(runDemo, 800);
+</script>
+</body>
+</html>
