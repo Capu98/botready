@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BotReady — Risponde per te su WhatsApp. Pronto in 24 ore.</title>
-<meta name="description" content="BotReady risponde ai tuoi clienti su WhatsApp quando tu non puoi. Riduce i no-show del 30-50%, libera 2 ore al giorno. Setup in 24 ore, da €29/mese.">
+<title>BotReady | Prenotazioni WhatsApp Automatiche per Ristoranti — Stop ai No-Show</title>
+<meta name="description" content="BotReady risponde alle prenotazioni WhatsApp per te, anche di notte. Riduce i no-show del 30-50%. Pronto in 24 ore. Prova gratis 14 giorni — nessuna carta.">
+<meta name="keywords" content="whatsapp prenotazioni ristorante, ridurre no-show, risposta automatica whatsapp ristorante, gestione prenotazioni whatsapp">
+<link rel="canonical" href="https://capu98.github.io/botready/">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
@@ -123,6 +125,12 @@ section { padding: clamp(80px, 10vw, 120px) clamp(20px, 5vw, 80px); }
   background: linear-gradient(135deg, var(--teal), var(--green));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.hero-emotional {
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 900; letter-spacing: -1.5px; line-height: 1.1;
+  margin-bottom: 20px; color: var(--text);
 }
 
 .hero-sub {
@@ -311,9 +319,16 @@ section { padding: clamp(80px, 10vw, 120px) clamp(20px, 5vw, 80px); }
 
 .steps::before {
   content: '';
-  position: absolute; top: 40px; left: 15%; right: 15%; height: 1px;
+  position: absolute; top: 40px; left: 15%; right: 15%; height: 2px;
   background: linear-gradient(90deg, var(--teal), var(--green));
-  opacity: .3;
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 1.2s cubic-bezier(.4,0,.2,1), opacity .4s ease;
+}
+.steps.line-visible::before {
+  opacity: .5;
+  transform: scaleX(1);
 }
 
 .step { text-align: center; padding: 0 16px; }
@@ -728,7 +743,7 @@ footer {
 
 /* ── GSAP ENTRANCE PREP ── */
 /* Hero elements nascosti: GSAP li rivela con stagger */
-.hero-tag, .hero-title, .hero-sub, .hero-actions, .hero-trust {
+.hero-tag, .hero-title, .hero-emotional, .hero-sub, .hero-actions, .hero-trust {
   opacity: 0;
 }
 /* Visual nascosta: solo opacity, non tocco il transform (tilt lo usa) */
@@ -754,12 +769,200 @@ footer {
 
 /* ── REDUCED MOTION fallback ── */
 @media (prefers-reduced-motion: reduce) {
-  .hero-tag, .hero-title, .hero-sub, .hero-actions, .hero-trust, .hero-visual {
+  .hero-tag, .hero-title, .hero-sub, .hero-actions, .hero-trust, .hero-visual,
+  .sr, .sr-left, .sr-right, .sr-scale {
     opacity: 1 !important;
     transform: none !important;
     visibility: visible !important;
   }
+  .steps::before { opacity: .3 !important; transform: scaleX(1) !important; }
+  .smoke-wisp, .bg-orb, .cursor-glow, .cursor-trail-dot,
+  #laser-scan, #particle-canvas, .aurora-bg, .morphing-blob { display: none !important; }
+  .plan.featured { animation: none !important; }
 }
+
+/* ── SMOKE WISPS ── */
+@keyframes smokeRise {
+  0%   { opacity: 0; transform: translateX(var(--drift-start,0)) translateY(0) scale(.6); filter: blur(6px); }
+  15%  { opacity: var(--max-opacity,.18); }
+  70%  { opacity: calc(var(--max-opacity,.18) * .4); filter: blur(14px); }
+  100% { opacity: 0; transform: translateX(var(--drift-end,20px)) translateY(-110px) scale(1.6); filter: blur(22px); }
+}
+.smoke-wisp {
+  position: absolute; bottom: 100%; border-radius: 50%;
+  background: radial-gradient(circle, rgba(200,255,248,.55) 0%, rgba(0,212,180,.22) 45%, transparent 70%);
+  will-change: transform, opacity, filter;
+  animation: smokeRise var(--duration,3.2s) ease-in-out infinite;
+  pointer-events: none; z-index: 2;
+}
+
+/* ── FLOATING LIGHT ORBS ── */
+.bg-orb { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; will-change: transform; filter: blur(80px); }
+@keyframes orbFloat1 { 0%{transform:translate(0,0)} 25%{transform:translate(60px,-80px)} 50%{transform:translate(-40px,-140px)} 75%{transform:translate(80px,-60px)} 100%{transform:translate(0,0)} }
+@keyframes orbFloat2 { 0%{transform:translate(0,0)} 33%{transform:translate(-90px,60px)} 66%{transform:translate(50px,100px)} 100%{transform:translate(0,0)} }
+@keyframes orbFloat3 { 0%{transform:translate(0,0)} 20%{transform:translate(40px,80px)} 50%{transform:translate(-70px,30px)} 80%{transform:translate(30px,-60px)} 100%{transform:translate(0,0)} }
+.bg-orb-1 { width:520px;height:520px;background:radial-gradient(circle,rgba(0,212,180,.06) 0%,transparent 70%);top:5vh;left:10vw;animation:orbFloat1 28s ease-in-out infinite; }
+.bg-orb-2 { width:440px;height:440px;background:radial-gradient(circle,rgba(16,212,142,.05) 0%,transparent 70%);top:40vh;right:8vw;animation:orbFloat2 34s ease-in-out infinite;animation-delay:-10s; }
+.bg-orb-3 { width:380px;height:380px;background:radial-gradient(circle,rgba(120,80,255,.04) 0%,transparent 70%);bottom:10vh;left:30vw;animation:orbFloat3 40s ease-in-out infinite;animation-delay:-18s; }
+
+/* ── CURSOR GLOW TRAIL ── */
+.cursor-glow {
+  position:fixed;top:0;left:0;width:80px;height:80px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,212,180,.18) 0%,rgba(0,212,180,.06) 45%,transparent 70%);
+  pointer-events:none;z-index:9999;transform:translate(-50%,-50%);will-change:transform;transition:opacity .3s;
+}
+.cursor-trail-dot {
+  position:fixed;top:0;left:0;border-radius:50%;pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);will-change:transform,opacity;background:rgba(0,212,180,.55);
+}
+@media(hover:none){.cursor-glow,.cursor-trail-dot{display:none!important}}
+
+/* ── GLITCH ON SECTION TITLES ── */
+.s-title { position: relative; }
+.s-title::before, .s-title::after {
+  content: attr(data-text); position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%; opacity: 0; pointer-events: none;
+}
+.s-title::before { color: #ff2d55; mix-blend-mode: screen; }
+.s-title::after  { color: #00d4b4; mix-blend-mode: screen; }
+.s-title.glitch-active::before { animation: glitch-red .3s steps(2,end) forwards; }
+.s-title.glitch-active::after  { animation: glitch-cyan .3s steps(2,end) forwards; }
+@keyframes glitch-red {
+  0%{opacity:0;transform:translate(0,0);clip-path:none}
+  10%{opacity:.8;transform:translate(-3px,1px);clip-path:polygon(0 20%,100% 20%,100% 40%,0 40%)}
+  30%{opacity:.6;transform:translate(2px,-1px);clip-path:polygon(0 55%,100% 55%,100% 70%,0 70%)}
+  55%{opacity:.7;transform:translate(-2px,2px);clip-path:polygon(0 5%,100% 5%,100% 25%,0 25%)}
+  100%{opacity:0;transform:translate(0,0);clip-path:none}
+}
+@keyframes glitch-cyan {
+  0%{opacity:0;transform:translate(0,0);clip-path:none}
+  15%{opacity:.7;transform:translate(3px,-1px);clip-path:polygon(0 60%,100% 60%,100% 75%,0 75%)}
+  40%{opacity:.5;transform:translate(-2px,1px);clip-path:polygon(0 10%,100% 10%,100% 30%,0 30%)}
+  60%{opacity:.8;transform:translate(2px,-2px);clip-path:polygon(0 80%,100% 80%,100% 95%,0 95%)}
+  100%{opacity:0;transform:translate(0,0);clip-path:none}
+}
+
+/* ── LASER SCAN ── */
+#laser-scan {
+  position:fixed;top:0;left:0;width:100%;height:2px;pointer-events:none;z-index:9997;
+  background:linear-gradient(90deg,transparent 0%,rgba(0,212,180,.15) 10%,rgba(0,212,180,.7) 35%,#00d4b4 50%,rgba(0,212,180,.7) 65%,rgba(0,212,180,.15) 90%,transparent 100%);
+  box-shadow:0 0 4px 1px rgba(0,212,180,.5),0 0 10px 2px rgba(0,212,180,.3),0 0 20px 4px rgba(0,212,180,.15);
+  opacity:0;transition:opacity .4s;transform:translateZ(0);will-change:transform,opacity;
+}
+#laser-scan.visible { opacity: 1; }
+
+/* ── NEON PULSE on featured pricing ── */
+@keyframes neon-pulse {
+  0%,100% { box-shadow: 0 0 6px 0 rgba(0,212,180,.3), 0 0 12px 2px rgba(0,212,180,.15), inset 0 0 6px 0 rgba(0,212,180,.05); }
+  50%     { box-shadow: 0 0 14px 3px rgba(0,212,180,.55), 0 0 30px 8px rgba(0,212,180,.25), 0 0 50px 12px rgba(0,212,180,.1), inset 0 0 12px 2px rgba(0,212,180,.08); }
+}
+.plan.featured { animation: neon-pulse 3s ease-in-out infinite; }
+
+/* ── PARTICLE BURST CANVAS ── */
+#particle-canvas { position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:99998; }
+
+/* ── AURORA behind pricing ── */
+.aurora-bg {
+  position:absolute;inset:-60% -40%;z-index:0;opacity:.07;pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 40%,#00d4b4 0%,transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 20%,#10d48e 0%,transparent 55%),
+    radial-gradient(ellipse 70% 50% at 50% 80%,#7b4f9e 0%,transparent 60%);
+  background-size:300% 300%;
+  animation:aurora-drift 28s ease-in-out infinite alternate;
+  filter:blur(40px);will-change:background-position;
+}
+@keyframes aurora-drift {
+  0%{background-position:0% 0%,100% 0%,50% 100%}
+  50%{background-position:80% 60%,20% 80%,10% 20%}
+  100%{background-position:100% 50%,0% 100%,100% 0%}
+}
+
+/* ── MORPHING BLOB behind demo chat ── */
+.blob-wrapper { position:absolute;inset:-30% -25%;z-index:0;pointer-events:none;display:flex;align-items:center;justify-content:center; }
+.morphing-blob {
+  width:120%;height:120%;
+  background:radial-gradient(ellipse at 40% 40%,#00d4b4 0%,#10d48e 50%,transparent 75%);
+  opacity:.08;filter:blur(32px);
+  border-radius:60% 40% 55% 45% / 45% 55% 40% 60%;
+  animation:blob-morph 18s ease-in-out infinite;will-change:border-radius,transform;
+}
+@keyframes blob-morph {
+  0%  {border-radius:60% 40% 55% 45%/45% 55% 40% 60%;transform:rotate(0deg) scale(1)}
+  25% {border-radius:40% 60% 45% 55%/60% 35% 65% 40%;transform:rotate(45deg) scale(1.04)}
+  50% {border-radius:55% 45% 65% 35%/50% 60% 40% 55%;transform:rotate(90deg) scale(.97)}
+  75% {border-radius:35% 65% 40% 60%/65% 45% 55% 35%;transform:rotate(135deg) scale(1.06)}
+  100%{border-radius:60% 40% 55% 45%/45% 55% 40% 60%;transform:rotate(180deg) scale(1)}
+}
+
+/* ── SCROLL REVEAL ── */
+.sr { opacity: 0; transform: translateY(32px); transition: none; }
+.sr-left { opacity: 0; transform: translateX(-40px); }
+.sr-right { opacity: 0; transform: translateX(40px); }
+.sr-scale { opacity: 0; transform: scale(0.92); }
+
+/* ── ENHANCED HOVERS ── */
+.pain-card {
+  transition: border-color .25s, transform .25s, box-shadow .3s;
+}
+.pain-card:hover {
+  border-color: rgba(0,212,180,.35);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(0,212,180,.08);
+}
+
+.feat-item {
+  transition: border-color .25s, transform .25s, box-shadow .3s;
+}
+.feat-item:hover {
+  border-color: rgba(0,212,180,.3);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,.2);
+}
+
+.plan {
+  transition: transform .3s, box-shadow .3s, border-color .3s;
+}
+.plan:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 48px rgba(0,0,0,.3);
+}
+.plan.featured:hover {
+  box-shadow: 0 20px 48px rgba(0,212,180,.15), 0 0 60px rgba(0,212,180,.06);
+}
+
+.review {
+  transition: border-color .25s, transform .25s, box-shadow .3s;
+}
+.review:hover {
+  border-color: rgba(0,212,180,.2);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 28px rgba(0,0,0,.2);
+}
+
+.roi-stat {
+  transition: border-color .25s, transform .3s, box-shadow .3s;
+}
+.roi-stat:hover {
+  border-color: rgba(0,212,180,.4);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 12px 36px rgba(0,212,180,.1);
+}
+
+/* ── BUTTON RIPPLE ── */
+.btn-primary, .plan-cta, .modal-cta, .nav-cta {
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary .ripple, .plan-cta .ripple, .modal-cta .ripple, .nav-cta .ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,.3);
+  transform: scale(0);
+  animation: rippleAnim .5s ease-out;
+  pointer-events: none;
+}
+@keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
 
 /* ── BRAND FAMILY ── */
 .family-section { padding: 100px clamp(24px,5vw,72px); background: var(--bg2); border-top: 1px solid var(--border); }
@@ -807,13 +1010,15 @@ footer {
         Disponibile 24 ore su 24, 7 giorni su 7
       </div>
 
-      <h1 class="hero-title">
+      <h1 class="hero-title">Prenotazioni WhatsApp Automatiche per il tuo Ristorante — Stop ai No-Show</h1>
+      <p class="hero-emotional">
         Stai perdendo 15.000€ all'anno.<br>
         <span class="accent">Uno alla volta, sabato dopo sabato.</span>
-      </h1>
+      </p>
 
       <p class="hero-sub">
-        Quante prenotazioni perdi ogni settimana perché nessuno risponde? BotReady risponde per te su WhatsApp — anche di notte, anche sabato sera. I no-show scendono del 30-50%.
+        Ogni tavolo che non si presenta è soldi buttati — e clienti che hai rifiutato per niente.
+        BotReady manda il promemoria il giorno prima e riduce i no-show del 30-50%, mentre tu sei in cucina.
       </p>
 
       <div class="hero-actions">
@@ -896,10 +1101,10 @@ footer {
 <!-- PAIN POINTS -->
 <section class="pain">
   <div class="container">
-    <div class="s-label">Il problema</div>
-    <h2 class="s-title">Il sabato sera<br>di ogni <span class="t">ristoratore italiano.</span></h2>
+    <div class="s-label sr">Il problema</div>
+    <h2 class="s-title sr">No-Show al Ristorante:<br><span class="t">quanto ti costa ogni sabato sera?</span></h2>
 
-    <div class="pain-narrative">
+    <div class="pain-narrative sr">
       <p>È sabato sera. Hai 40 coperti, due camerieri e il fuoco acceso su sei fornelli.</p>
       <p>Il telefono squilla. WhatsApp si riempie. <em>"Avete posto stasera?"</em> <em>"A che ora chiudete?"</em> <em>"Posso prenotare per domenica?"</em></p>
       <p>Chi può risponde quando può. Chi non trova risposta chiama il locale di fronte.</p>
@@ -907,25 +1112,25 @@ footer {
     </div>
 
     <div class="pain-grid">
-      <div class="pain-card">
+      <div class="pain-card sr">
         <div class="pain-emoji">🍽️</div>
         <div class="pain-title">Ristoranti & Bar</div>
         <div class="pain-text">Sei in cucina alle 20:00 e arrivano 10 messaggi su WhatsApp per prenotazioni, orari e menù. Non puoi rispondere a tutti.</div>
         <div class="pain-quote">"Ho rifiutato gente e poi i tavoli erano vuoti. Mi viene il nervoso."</div>
       </div>
-      <div class="pain-card">
+      <div class="pain-card sr">
         <div class="pain-emoji">🏥</div>
         <div class="pain-title">Studi & Professionisti</div>
         <div class="pain-text">I pazienti chiamano fuori orario per sapere se c'è disponibilità. La segreteria è chiusa. Non c'è nessuno a rispondere.</div>
         <div class="pain-quote">"La Silvia non ce la fa più a fare sala, telefono e prenotazioni."</div>
       </div>
-      <div class="pain-card">
+      <div class="pain-card sr">
         <div class="pain-emoji">🏨</div>
         <div class="pain-title">B&B & Strutture</div>
         <div class="pain-text">Richieste di disponibilità arrivano da tutto il mondo, spesso in lingue diverse, nel cuore della notte. Impossibile gestirle da soli.</div>
         <div class="pain-quote">"Mi scrivono alle 11 di sera per prenotare. Ma io dormo!"</div>
       </div>
-      <div class="pain-card">
+      <div class="pain-card sr">
         <div class="pain-emoji">🛍️</div>
         <div class="pain-title">Negozi & E-commerce</div>
         <div class="pain-text">Domande su prodotti, taglie, spedizioni, resi. Centinaia al giorno. Ogni risposta manuale ti toglie ore al lavoro vero.</div>
@@ -938,12 +1143,12 @@ footer {
 <!-- HOW IT WORKS -->
 <section class="how" id="come-funziona">
   <div class="container">
-    <div class="s-label">Come funziona</div>
-    <h2 class="s-title">Tre passi.<br><span class="t">Pronto in 24 ore.</span></h2>
-    <p class="s-sub">Nessuna app da installare, nessun tecnico necessario. Ti chiediamo solo qualche informazione sulla tua attività — il resto lo facciamo noi.</p>
+    <div class="s-label sr">Come funziona</div>
+    <h2 class="s-title sr">Come gestisci le prenotazioni<br><span class="t">WhatsApp in automatico.</span></h2>
+    <p class="s-sub sr">Nessuna app da installare, nessun tecnico necessario. Ti chiediamo solo qualche informazione sulla tua attività — il resto lo facciamo noi.</p>
 
     <div class="steps">
-      <div class="step">
+      <div class="step sr">
         <div class="step-num">
           📋
           <span class="step-n">1</span>
@@ -952,7 +1157,7 @@ footer {
         <div class="step-text">Compili un breve questionario: cosa fai, quali domande ricevi spesso, gli orari, il tono che vuoi usare con i clienti. Richiede 5 minuti.</div>
       </div>
 
-      <div class="step">
+      <div class="step sr">
         <div class="step-num">
           🤖
           <span class="step-n">2</span>
@@ -961,7 +1166,7 @@ footer {
         <div class="step-text">Entro 24 ore il tuo assistente è pronto: personalizzato sulle tue FAQ, con la tua voce e identità. Nessun copia-incolla generico.</div>
       </div>
 
-      <div class="step">
+      <div class="step sr">
         <div class="step-num">
           🚀
           <span class="step-n">3</span>
@@ -976,47 +1181,47 @@ footer {
 <!-- FEATURES -->
 <section>
   <div class="container">
-    <div class="s-label">Perché funziona</div>
-    <h2 class="s-title">Come avere una persona<br>in più, <span class="t">sempre disponibile.</span></h2>
-    <p class="s-sub">BotReady è come avere una Silvia in più — solo che lavora 24 ore su 24, non va in ferie e non si ammala.</p>
+    <div class="s-label sr">Perché funziona</div>
+    <h2 class="s-title sr">Perché i ristoratori italiani<br><span class="t">scelgono BotReady.</span></h2>
+    <p class="s-sub sr">BotReady è come avere una Silvia in più — solo che lavora 24 ore su 24, non va in ferie e non si ammala.</p>
 
     <div class="feat-grid">
-      <div class="feat-item">
+      <div class="feat-item sr">
         <div class="feat-icon">🍽️</div>
         <div>
           <div class="feat-title">I tavoli vuoti di sabato smettono di farti perdere soldi.</div>
           <div class="feat-text">BotReady manda un messaggio WhatsApp a ogni persona che prenota, il giorno prima: "Ciao Luca, ti ricordiamo il tavolo per domani sera alle 20:30. Se non puoi venire, rispondici — così liberiamo il posto per altri." I no-show scendono del 30-50%. Sono 5.000-8.000€ che tornano in cassa ogni anno.</div>
         </div>
       </div>
-      <div class="feat-item">
+      <div class="feat-item sr">
         <div class="feat-icon">📋</div>
         <div>
           <div class="feat-title">Le prenotazioni arrivano in ordine. Anche alle 23:00.</div>
           <div class="feat-text">Il cliente scrive su WhatsApp e riceve risposta immediata — giorno, orario, numero di persone, nome. Tutto raccolto automaticamente. Niente quaderno, niente doppie prenotazioni, niente nomi senza numero. Silvia non deve più stare col telefono in mano tra un tavolo e l'altro.</div>
         </div>
       </div>
-      <div class="feat-item">
+      <div class="feat-item sr">
         <div class="feat-icon">⏱️</div>
         <div>
           <div class="feat-title">2 ore al giorno in meno al telefono. Tutti i giorni.</div>
           <div class="feat-text">Le domande che arrivano ogni giorno sono sempre le stesse: orari, disponibilità, menù, parcheggio. BotReady risponde a queste domande in automatico, 24 ore su 24. 1,5-2 ore al giorno restituite — ogni giorno, sette giorni su sette.</div>
         </div>
       </div>
-      <div class="feat-item">
+      <div class="feat-item sr">
         <div class="feat-icon">🔄</div>
         <div>
           <div class="feat-title">Aggiornamenti inclusi</div>
           <div class="feat-text">Cambiano gli orari? Hai nuovi prodotti? Scrivi e aggiorniamo entro 24 ore. Nessun costo aggiuntivo nei piani Pro e Enterprise.</div>
         </div>
       </div>
-      <div class="feat-item">
+      <div class="feat-item sr">
         <div class="feat-icon">🎭</div>
         <div>
           <div class="feat-title">Risponde con la tua voce</div>
           <div class="feat-text">Vuoi un tono formale o amichevole? Risponde come vuoi tu — con il tuo nome, il tuo stile, la tua identità. I clienti non si accorgono della differenza.</div>
         </div>
       </div>
-      <div class="feat-item">
+      <div class="feat-item sr">
         <div class="feat-icon">📊</div>
         <div>
           <div class="feat-title">Report mensile (Pro e Enterprise)</div>
@@ -1030,24 +1235,24 @@ footer {
 <!-- ROI -->
 <section class="roi-section">
   <div class="container">
-    <div class="s-label">I numeri che contano</div>
-    <h2 class="s-title">Si ripaga in<br><span class="t">2-3 settimane.</span></h2>
-    <p class="s-sub">Un ristorante da 40 coperti perde in media 15.000€ all'anno di no-show. Con i promemoria, quella perdita si dimezza.</p>
+    <div class="s-label sr">I numeri che contano</div>
+    <h2 class="s-title sr">No-show -50%,<br><span class="t">2 ore al giorno risparmiate.</span></h2>
+    <p class="s-sub sr">Un ristorante da 40 coperti perde in media 15.000€ all'anno di no-show. Con i promemoria, quella perdita si dimezza.</p>
 
     <div class="roi-grid">
-      <div class="roi-stat">
+      <div class="roi-stat sr" data-count="15000" data-prefix="" data-suffix="€">
         <div class="roi-num">15.000€</div>
         <div class="roi-label">persi ogni anno<br>in no-show (media 40 coperti)</div>
       </div>
-      <div class="roi-stat">
+      <div class="roi-stat sr" data-count="50" data-prefix="-" data-suffix="%">
         <div class="roi-num">-30–50%</div>
         <div class="roi-label">di no-show in meno<br>con i promemoria automatici</div>
       </div>
-      <div class="roi-stat">
+      <div class="roi-stat sr" data-count="59" data-prefix="€" data-suffix="">
         <div class="roi-num">€59</div>
         <div class="roi-label">al mese (piano Pro),<br>nessun costo nascosto</div>
       </div>
-      <div class="roi-stat">
+      <div class="roi-stat sr" data-count="0" data-text="2-3 sett.">
         <div class="roi-num">2-3 sett.</div>
         <div class="roi-label">e si è già ripagato —<br>il resto è guadagno netto</div>
       </div>
@@ -1058,17 +1263,17 @@ footer {
 <!-- DEMO INTERATTIVA -->
 <section class="demo-section" id="demo">
   <div class="container">
-    <div class="s-label">Demo interattiva</div>
-    <h2 class="s-title">Vedi come<br><span class="t">funziona.</span></h2>
-    <p class="s-sub">Seleziona il tuo settore e guarda come BotReady risponde ai tuoi clienti al posto tuo.</p>
+    <div class="s-label sr">Demo interattiva</div>
+    <h2 class="s-title sr">Prova la demo:<br><span class="t">vedi come risponde su WhatsApp.</span></h2>
+    <p class="s-sub sr">Seleziona il tuo settore e guarda come BotReady risponde ai tuoi clienti al posto tuo.</p>
 
-    <div class="demo-tabs" role="tablist">
+    <div class="demo-tabs sr" role="tablist">
       <button class="demo-tab-btn active" onclick="startDemo('ristorante',this)">🍽️ Ristorante</button>
       <button class="demo-tab-btn" onclick="startDemo('studio',this)">🏥 Studio Medico</button>
       <button class="demo-tab-btn" onclick="startDemo('ecommerce',this)">🛍️ Negozio</button>
     </div>
 
-    <div class="demo-chat-card">
+    <div class="demo-chat-card sr-scale">
       <div class="demo-chat-header">
         <div class="chat-avatar" id="demoAvatar">🍽️</div>
         <div>
@@ -1084,13 +1289,13 @@ footer {
 <!-- PRICING -->
 <section id="prezzi" style="background: var(--bg2)">
   <div class="container">
-    <div class="s-label">Prezzi</div>
-    <h2 class="s-title">Semplice.<br><span class="t">Senza sorprese.</span></h2>
-    <p class="s-sub">Tre piani per ogni tipo di attività. Nessun vincolo contrattuale — puoi cambiare o cancellare in qualsiasi momento.</p>
+    <div class="s-label sr">Prezzi</div>
+    <h2 class="s-title sr">Prezzi.<br><span class="t">Si ripaga in 3 settimane.</span></h2>
+    <p class="s-sub sr">Tre piani per ogni tipo di attività. Nessun vincolo contrattuale — puoi cambiare o cancellare in qualsiasi momento.</p>
 
     <div class="pricing-grid">
       <!-- Starter -->
-      <div class="plan">
+      <div class="plan sr">
         <div class="plan-name">Starter</div>
         <div class="plan-price" style="font-size:26px;line-height:1.2">Setup €99<br><span style="font-size:18px">poi €29/mese</span></div>
         <div class="plan-period">pagamento via bonifico</div>
@@ -1107,7 +1312,7 @@ footer {
       </div>
 
       <!-- Pro (featured) -->
-      <div class="plan featured">
+      <div class="plan featured sr">
         <div class="plan-badge">⭐ Più scelto</div>
         <div class="plan-name">Pro</div>
         <div class="plan-price">€59</div>
@@ -1125,7 +1330,7 @@ footer {
       </div>
 
       <!-- Enterprise -->
-      <div class="plan">
+      <div class="plan sr">
         <div class="plan-name">Enterprise</div>
         <div class="plan-price">€99</div>
         <div class="plan-period">al mese · pagamento via bonifico</div>
@@ -1147,12 +1352,12 @@ footer {
 <!-- TESTIMONIALS -->
 <section>
   <div class="container">
-    <div class="s-label">Cosa dicono i clienti</div>
-    <h2 class="s-title">Risultati reali.<br><span class="t">Subito.</span></h2>
-    <p class="s-sub">Le prime attività che hanno adottato BotReady hanno visto risultati concreti dalla prima settimana.</p>
+    <div class="s-label sr">Cosa dicono i clienti</div>
+    <h2 class="s-title sr">Risultati reali.<br><span class="t">Subito.</span></h2>
+    <p class="s-sub sr">Le prime attività che hanno adottato BotReady hanno visto risultati concreti dalla prima settimana.</p>
 
     <div class="reviews-grid">
-      <div class="review">
+      <div class="review sr">
         <div class="review-stars">★★★★★</div>
         <div class="review-text">"Da quando ho il bot non perdo più prenotazioni. Risponde anche quando sono in cucina alle 21:00. In un mese ha gestito oltre 200 messaggi che avrei dovuto gestire io."</div>
         <div class="review-author">
@@ -1164,7 +1369,7 @@ footer {
         </div>
       </div>
 
-      <div class="review">
+      <div class="review sr">
         <div class="review-stars">★★★★★</div>
         <div class="review-text">"La segreteria non deve più rispondere alle stesse 10 domande ogni giorno. Il bot le gestisce tutte. Abbiamo liberato 2 ore al giorno per lavoro che conta davvero."</div>
         <div class="review-author">
@@ -1176,7 +1381,7 @@ footer {
         </div>
       </div>
 
-      <div class="review">
+      <div class="review sr">
         <div class="review-stars">★★★★★</div>
         <div class="review-text">"Ho ricevuto 3 prenotazioni internazionali di notte nel primo mese. Prima le avrei perse. Setup semplicissimo, in meno di 24 ore era già attivo."</div>
         <div class="review-author">
@@ -1194,8 +1399,8 @@ footer {
 <!-- FAQ -->
 <section class="faq" id="faq">
   <div class="container">
-    <div class="s-label">Domande frequenti</div>
-    <h2 class="s-title">Hai dubbi?<br><span class="t">Ti rispondiamo.</span></h2>
+    <div class="s-label sr">Domande frequenti</div>
+    <h2 class="s-title sr">Hai dubbi?<br><span class="t">Ti rispondiamo.</span></h2>
 
     <div class="faq-list">
       <div class="faq-item">
@@ -1329,9 +1534,9 @@ footer {
 <!-- FINAL CTA -->
 <section class="final-cta">
   <div class="container" style="display:flex;flex-direction:column;align-items:center">
-    <div class="urgency-tag">🎁 Offerta lancio: 14 giorni gratis — nessuna carta richiesta</div>
-    <h2 class="s-title">Smetti di perdere<br>prenotazioni. <span class="t">Inizia oggi.</span></h2>
-    <p class="s-sub">Tu mandi gli orari e il menù. Noi configuriamo tutto. Entro 24 ore risponde per te — mentre sei in cucina, di notte, in vacanza.</p>
+    <div class="urgency-tag sr-scale">🎁 Offerta lancio: 14 giorni gratis — nessuna carta richiesta</div>
+    <h2 class="s-title sr">Smetti di perdere<br>prenotazioni. <span class="t">Inizia oggi.</span></h2>
+    <p class="s-sub sr">Tu mandi gli orari e il menù. Noi configuriamo tutto. Entro 24 ore risponde per te — mentre sei in cucina, di notte, in vacanza.</p>
     <button class="btn-primary" style="font-size:17px; padding:16px 40px" onclick="openModal()">
       Prova gratis — 14 giorni inclusi →
     </button>
@@ -1803,7 +2008,7 @@ document.addEventListener('keydown', e => {
 // ── HERO ENTRANCE ANIMATION ──
 // Il CSS imposta opacity:0 sugli elementi hero — questo JS li rivela con stagger
 (function heroEntrance() {
-  var selectors = ['.hero-tag','.hero-title','.hero-sub','.hero-actions','.hero-trust','.hero-visual'];
+  var selectors = ['.hero-tag','.hero-title','.hero-emotional','.hero-sub','.hero-actions','.hero-trust','.hero-visual'];
 
   // Fallback: se GSAP non carica (CDN offline, timeout) mostra tutto subito
   function showAll() {
@@ -1821,9 +2026,10 @@ document.addEventListener('keydown', e => {
     if (typeof gsap === 'undefined') { showAll(); return; }
 
     var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-    tl.to('.hero-tag',     { opacity: 1, y: 0, duration: 0.5 }, 0.15)
-      .to('.hero-title',   { opacity: 1, y: 0, duration: 0.65 }, 0.30)
-      .to('.hero-sub',     { opacity: 1, y: 0, duration: 0.55 }, 0.55)
+    tl.to('.hero-tag',       { opacity: 1, y: 0, duration: 0.5 }, 0.15)
+      .to('.hero-title',     { opacity: 1, y: 0, duration: 0.65 }, 0.30)
+      .to('.hero-emotional', { opacity: 1, y: 0, duration: 0.60 }, 0.45)
+      .to('.hero-sub',       { opacity: 1, y: 0, duration: 0.55 }, 0.60)
       .to('.hero-actions', { opacity: 1, y: 0, duration: 0.50 }, 0.75)
       .to('.hero-trust',   { opacity: 1, y: 0, duration: 0.45 }, 0.90)
       .to('.hero-visual',  { opacity: 1,        duration: 0.70 }, 0.40);
@@ -1835,6 +2041,427 @@ document.addEventListener('keydown', e => {
     runEntrance();
   }
 }());
+
+// ── SCROLL REVEAL (GSAP ScrollTrigger) ──────────────────────────────────────
+(function scrollReveal() {
+  function run() {
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+      // Fallback: show everything
+      document.querySelectorAll('.sr,.sr-left,.sr-right,.sr-scale').forEach(function(el) {
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+      });
+      return;
+    }
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Standard fade-up
+    gsap.utils.toArray('.sr').forEach(function(el, i) {
+      var parent = el.parentElement;
+      var siblings = parent ? Array.from(parent.querySelectorAll(':scope > .sr')) : [];
+      var idx = siblings.indexOf(el);
+      gsap.to(el, {
+        scrollTrigger: { trigger: el, start: 'top 88%', once: true },
+        opacity: 1, y: 0, duration: 0.6,
+        delay: idx > 0 ? Math.min(idx * 0.1, 0.4) : 0,
+        ease: 'power2.out'
+      });
+    });
+
+    // Slide from left
+    gsap.utils.toArray('.sr-left').forEach(function(el) {
+      gsap.to(el, {
+        scrollTrigger: { trigger: el, start: 'top 88%', once: true },
+        opacity: 1, x: 0, duration: 0.6, ease: 'power2.out'
+      });
+    });
+
+    // Slide from right
+    gsap.utils.toArray('.sr-right').forEach(function(el) {
+      gsap.to(el, {
+        scrollTrigger: { trigger: el, start: 'top 88%', once: true },
+        opacity: 1, x: 0, duration: 0.6, ease: 'power2.out'
+      });
+    });
+
+    // Scale up
+    gsap.utils.toArray('.sr-scale').forEach(function(el) {
+      gsap.to(el, {
+        scrollTrigger: { trigger: el, start: 'top 88%', once: true },
+        opacity: 1, scale: 1, duration: 0.7, ease: 'back.out(1.4)'
+      });
+    });
+
+    // ── STEP PROGRESS LINE ──
+    var stepsLine = document.querySelector('.steps::before');
+    var stepsEl = document.querySelector('.steps');
+    if (stepsEl) {
+      // Animate the ::before pseudo-element by adding a class
+      ScrollTrigger.create({
+        trigger: stepsEl,
+        start: 'top 75%',
+        once: true,
+        onEnter: function() { stepsEl.classList.add('line-visible'); }
+      });
+    }
+
+    // ── ROI COUNTER ANIMATION ──
+    document.querySelectorAll('.roi-stat[data-count]').forEach(function(stat) {
+      var numEl = stat.querySelector('.roi-num');
+      var target = parseInt(stat.dataset.count);
+      var prefix = stat.dataset.prefix || '';
+      var suffix = stat.dataset.suffix || '';
+      var text = stat.dataset.text || '';
+
+      if (target === 0 && text) {
+        // Non-numeric (e.g. "2-3 sett.")
+        ScrollTrigger.create({
+          trigger: stat, start: 'top 85%', once: true,
+          onEnter: function() { numEl.textContent = text; }
+        });
+        return;
+      }
+
+      numEl.textContent = prefix + '0' + suffix;
+
+      ScrollTrigger.create({
+        trigger: stat, start: 'top 85%', once: true,
+        onEnter: function() {
+          var obj = { val: 0 };
+          gsap.to(obj, {
+            val: target, duration: 1.8, ease: 'power1.out',
+            onUpdate: function() {
+              var v = Math.round(obj.val);
+              if (target >= 1000) v = v.toLocaleString('it-IT');
+              numEl.textContent = prefix + v + suffix;
+            }
+          });
+        }
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() { setTimeout(run, 100); });
+  } else {
+    setTimeout(run, 100);
+  }
+}());
+
+// ── NAV PROGRESS BAR ────────────────────────────────────────────────────────
+(function navProgress() {
+  var bar = document.getElementById('navProgressBar');
+  if (!bar) return;
+  window.addEventListener('scroll', function() {
+    var h = document.documentElement;
+    var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    bar.style.width = Math.min(pct, 100) + '%';
+  }, { passive: true });
+}());
+
+// ── BUTTON RIPPLE EFFECT ─────────────────────────────────────────────────────
+document.addEventListener('click', function(e) {
+  var btn = e.target.closest('.btn-primary, .plan-cta, .modal-cta');
+  if (!btn) return;
+  var rect = btn.getBoundingClientRect();
+  var ripple = document.createElement('span');
+  ripple.className = 'ripple';
+  var size = Math.max(rect.width, rect.height);
+  ripple.style.width = ripple.style.height = size + 'px';
+  ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+  ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+  btn.appendChild(ripple);
+  setTimeout(function() { ripple.remove(); }, 500);
+});
+
+// ── SMOKE WISPS — inject into chat mockup ────────────────────────────────────
+(function() {
+  var WISPS = [
+    {left:'22%',delay:'0s',dur:'3.4s',ds:'-8px',de:'12px',op:'.20',sz:'38px'},
+    {left:'38%',delay:'.7s',dur:'3.0s',ds:'6px',de:'-14px',op:'.16',sz:'44px'},
+    {left:'52%',delay:'1.4s',dur:'3.8s',ds:'-4px',de:'18px',op:'.14',sz:'36px'},
+    {left:'65%',delay:'.3s',dur:'2.9s',ds:'10px',de:'-8px',op:'.18',sz:'42px'},
+    {left:'14%',delay:'1.9s',dur:'3.5s',ds:'-12px',de:'6px',op:'.12',sz:'32px'},
+    {left:'78%',delay:'1.1s',dur:'4.0s',ds:'4px',de:'-16px',op:'.13',sz:'34px'},
+  ];
+  function init() {
+    var m = document.querySelector('.chat-mockup');
+    if (!m) return;
+    WISPS.forEach(function(c) {
+      var el = document.createElement('div');
+      el.className = 'smoke-wisp';
+      el.style.cssText = 'left:'+c.left+';--delay:'+c.delay+';--duration:'+c.dur+
+        ';--drift-start:'+c.ds+';--drift-end:'+c.de+';--max-opacity:'+c.op+
+        ';width:'+c.sz+';height:'+c.sz+';animation-delay:'+c.delay+';animation-duration:'+c.dur;
+      m.appendChild(el);
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+}());
+
+// ── FLOATING LIGHT ORBS ──────────────────────────────────────────────────────
+(function() {
+  function init() {
+    var f = document.createDocumentFragment();
+    for (var i = 1; i <= 3; i++) {
+      var o = document.createElement('div');
+      o.className = 'bg-orb bg-orb-' + i;
+      f.appendChild(o);
+    }
+    document.body.appendChild(f);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+}());
+
+// ── CURSOR GLOW + TRAIL ─────────────────────────────────────────────────────
+(function() {
+  if (!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+  var TRAIL = 4, SIZES = [10,7,5,3], LAG = [80,160,240,320];
+  var glow = document.createElement('div');
+  glow.className = 'cursor-glow'; glow.style.opacity = '0';
+  document.body.appendChild(glow);
+  var dots = [];
+  for (var i = 0; i < TRAIL; i++) {
+    var d = document.createElement('div');
+    d.className = 'cursor-trail-dot';
+    d.style.cssText = 'width:'+SIZES[i]+'px;height:'+SIZES[i]+'px;opacity:0';
+    document.body.appendChild(d); dots.push(d);
+  }
+  var mx = -200, my = -200, gx = -200, gy = -200, vis = false;
+  var CAP = 40, hX = new Float32Array(CAP), hY = new Float32Array(CAP), hH = 0, hL = 0;
+  document.addEventListener('mousemove', function(e) {
+    mx = e.clientX; my = e.clientY;
+    if (!vis) { glow.style.opacity = '1'; dots.forEach(function(d){d.style.opacity='1'}); vis = true; }
+  }, {passive:true});
+  document.addEventListener('mouseleave', function() {
+    glow.style.opacity = '0'; dots.forEach(function(d){d.style.opacity='0'}); vis = false;
+  });
+  function tick(ts) {
+    if (vis) {
+      hX[hH] = mx; hY[hH] = my; hH = (hH+1) % CAP; if (hL < CAP) hL++;
+      gx += (mx-gx) * .12; gy += (my-gy) * .12;
+      glow.style.transform = 'translate('+(gx-40)+'px,'+(gy-40)+'px)';
+      if (hL > 1) {
+        var range = Math.min(hL-1, CAP-1);
+        dots.forEach(function(dot, i) {
+          var off = Math.min(Math.round(LAG[i]/16), range);
+          var idx = ((hH-1-off)+CAP) % CAP;
+          dot.style.transform = 'translate('+(hX[idx]-SIZES[i]/2)+'px,'+(hY[idx]-SIZES[i]/2)+'px)';
+          dot.style.opacity = String((1-(i+1)/(TRAIL+1))*.5);
+        });
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}());
+
+// ── GLITCH EFFECT on section titles ──────────────────────────────────────────
+(function() {
+  function init() {
+    document.querySelectorAll('.s-title').forEach(function(el) {
+      if (!el.dataset.text) el.dataset.text = el.textContent;
+      var cool = false;
+      el.addEventListener('mouseenter', function() {
+        if (cool) return; cool = true;
+        el.classList.add('glitch-active');
+        setTimeout(function() { el.classList.remove('glitch-active'); }, 320);
+        setTimeout(function() { cool = false; }, 800);
+      });
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+}());
+
+// ── LASER SCAN on scroll ─────────────────────────────────────────────────────
+(function() {
+  var laser = document.createElement('div');
+  laser.id = 'laser-scan'; document.body.appendChild(laser);
+  var hideTimer, ticking = false;
+  function update() {
+    var s = window.scrollY, max = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = max > 0 ? s / max : 0;
+    laser.style.transform = 'translateY(' + (pct * window.innerHeight) + 'px) translateZ(0)';
+    laser.classList.add('visible');
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(function() { laser.classList.remove('visible'); }, 600);
+    ticking = false;
+  }
+  window.addEventListener('scroll', function() {
+    if (!ticking) { requestAnimationFrame(update); ticking = true; }
+  }, {passive:true});
+}());
+
+// ── PARTICLE BURST on .btn-primary click ─────────────────────────────────────
+(function() {
+  var canvas = document.createElement('canvas');
+  canvas.id = 'particle-canvas'; document.body.appendChild(canvas);
+  var ctx = canvas.getContext('2d');
+  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  resize(); window.addEventListener('resize', resize, {passive:true});
+  var particles = [], COLORS = ['#00d4b4','#10d48e','#7fffef','#00b89c','#fff'];
+  var lastT = null, raf = null;
+  function rand(a,b) { return a + Math.random()*(b-a); }
+  function P(x,y) {
+    var a = rand(0,Math.PI*2), sp = rand(120,340);
+    this.x=x; this.y=y; this.vx=Math.cos(a)*sp; this.vy=Math.sin(a)*sp;
+    this.g=rand(200,380); this.sz=rand(2.5,5); this.color=COLORS[Math.floor(rand(0,COLORS.length))];
+    this.alpha=1; this.life=0; this.dur=rand(.45,.7); this.alive=true;
+  }
+  P.prototype.update = function(dt) {
+    this.life += dt; var t = this.life/this.dur;
+    if (t >= 1) { this.alive = false; return; }
+    this.vy += this.g*dt; this.x += this.vx*dt; this.y += this.vy*dt;
+    this.alpha = 1 - t*t;
+  };
+  P.prototype.draw = function() {
+    ctx.save(); ctx.globalAlpha = this.alpha; ctx.fillStyle = this.color;
+    ctx.shadowColor = this.color; ctx.shadowBlur = this.sz*2.5;
+    ctx.beginPath(); ctx.arc(this.x,this.y,this.sz/2,0,Math.PI*2); ctx.fill(); ctx.restore();
+  };
+  function loop(ts) {
+    if (lastT === null) lastT = ts;
+    var dt = Math.min((ts-lastT)/1000, .05); lastT = ts;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for (var i = particles.length-1; i >= 0; i--) {
+      particles[i].update(dt);
+      if (!particles[i].alive) particles.splice(i,1); else particles[i].draw();
+    }
+    if (particles.length > 0) raf = requestAnimationFrame(loop);
+    else { raf = null; lastT = null; }
+  }
+  document.addEventListener('click', function(e) {
+    var btn = e.target.closest('.btn-primary');
+    if (!btn) return;
+    var r = btn.getBoundingClientRect();
+    var cx = r.left+r.width/2, cy = r.top+r.height/2;
+    for (var i = 0; i < 14; i++) particles.push(new P(cx,cy));
+    if (!raf) raf = requestAnimationFrame(loop);
+  });
+}());
+
+// ── AURORA behind pricing section ────────────────────────────────────────────
+(function() {
+  function init() {
+    var sec = document.getElementById('prezzi');
+    if (!sec) return;
+    sec.style.position = 'relative'; sec.style.overflow = 'hidden';
+    var a = document.createElement('div');
+    a.className = 'aurora-bg'; a.setAttribute('aria-hidden','true');
+    sec.insertBefore(a, sec.firstChild);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+}());
+
+// ── MORPHING BLOB behind demo chat ───────────────────────────────────────────
+(function() {
+  function init() {
+    var card = document.querySelector('.demo-chat-card');
+    if (!card) return;
+    card.style.position = 'relative'; card.style.overflow = 'hidden';
+    var w = document.createElement('div');
+    w.className = 'blob-wrapper'; w.setAttribute('aria-hidden','true');
+    var b = document.createElement('div');
+    b.className = 'morphing-blob';
+    w.appendChild(b); card.insertBefore(w, card.firstChild);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+}());
+</script>
+
+<!-- ── SCHEMA JSON-LD (SEO) ── -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "BotReady",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "WhatsApp",
+  "description": "BotReady gestisce le prenotazioni WhatsApp del tuo ristorante in automatico, riduce i no-show del 30-50% e risponde ai clienti anche di notte.",
+  "url": "https://capu98.github.io/botready",
+  "offers": {
+    "@type": "Offer",
+    "price": "59",
+    "priceCurrency": "EUR",
+    "priceSpecification": {
+      "@type": "UnitPriceSpecification",
+      "price": "59",
+      "priceCurrency": "EUR",
+      "unitText": "mese"
+    }
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "ratingCount": "23",
+    "bestRating": "5"
+  },
+  "featureList": [
+    "Risposta automatica WhatsApp 24/7",
+    "Gestione prenotazioni ristorante",
+    "Riduzione no-show 30-50%",
+    "Promemoria automatici ai clienti",
+    "Setup in 24 ore"
+  ],
+  "inLanguage": "it-IT",
+  "audience": {
+    "@type": "Audience",
+    "audienceType": "Ristoratori italiani"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Come funziona BotReady per le prenotazioni del mio ristorante?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "BotReady si collega al tuo WhatsApp Business e risponde automaticamente ai clienti che scrivono per prenotare. Conferma la prenotazione, invia un promemoria 24 ore prima e riduce i no-show del 30-50%. Lo configuriamo noi in 24 ore."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quanto costa BotReady per un ristorante?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "BotReady parte da €59/mese. Con 2 no-show in meno al mese recuperi già il costo. La prova gratuita dura 14 giorni, senza carta di credito."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "I miei clienti capiscono che non sono io a rispondere?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. BotReady risponde con il tuo nome, il tuo tono e le informazioni del tuo locale. Non dice che è automatico. Per il cliente è come ricevere un messaggio da te, anche alle 2 di notte."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Devo essere esperto di tecnologia per usarlo?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Se sai usare WhatsApp, sai usare BotReady. Lo configuriamo noi in 1 ora, tu non tocchi nulla. Usi solo WhatsApp come sempre."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Posso provarlo prima di pagare?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sì. 14 giorni gratis, nessuna carta richiesta. Vedi i risultati nel tuo ristorante, poi decidi."
+      }
+    }
+  ]
+}
 </script>
 
 </body>
