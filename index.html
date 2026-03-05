@@ -7,6 +7,8 @@
 <meta name="description" content="BotReady risponde alle prenotazioni WhatsApp per te, anche di notte. Riduce i no-show del 30-50%. Pronto in 24 ore. Prova gratis 14 giorni — nessuna carta.">
 <meta name="keywords" content="whatsapp prenotazioni ristorante, ridurre no-show, risposta automatica whatsapp ristorante, gestione prenotazioni whatsapp">
 <link rel="canonical" href="https://capu98.github.io/botready/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+<script defer data-domain="capu98.github.io/botready" src="https://plausible.io/js/script.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
@@ -1649,6 +1651,13 @@ footer {
         💳 <strong style="color:var(--text)">Pagamento:</strong> il primo mese è gratuito. Dal secondo mese, riceverai le istruzioni per il pagamento via bonifico bancario. Nessuna carta di credito, nessun addebito automatico.
       </div>
 
+      <div style="margin-bottom:16px;display:flex;align-items:flex-start;gap:10px;">
+        <input type="checkbox" id="f-privacy" style="margin-top:3px;flex-shrink:0;accent-color:var(--teal);width:16px;height:16px;cursor:pointer;" />
+        <label for="f-privacy" style="font-size:12px;color:var(--muted);line-height:1.6;cursor:pointer;">
+          Ho letto e accetto la <a href="#" style="color:var(--teal);text-decoration:underline;">privacy policy</a> — i miei dati saranno usati solo per configurare il servizio.
+        </label>
+      </div>
+
       <button class="modal-cta" id="submitBtn" onclick="submitForm()">
         Prova gratis — 14 giorni inclusi →
       </button>
@@ -1704,6 +1713,13 @@ async function submitForm() {
 
   if (!nome || !cognome || !biz || !email || !tipo) {
     alert('Compila i campi obbligatori (*)');
+    return;
+  }
+
+  const privacy = document.getElementById('f-privacy');
+  if (privacy && !privacy.checked) {
+    alert('Accetta la privacy policy per continuare.');
+    privacy.focus();
     return;
   }
 
@@ -2472,6 +2488,52 @@ document.addEventListener('click', function(e) {
       }
     }
   ]
+}
+</script>
+
+<!-- COOKIE BANNER GDPR -->
+<div id="cookieBanner" style="
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;z-index:9999;
+  background:#0f172a;
+  border-top:1px solid rgba(0,212,180,0.2);
+  padding:16px clamp(16px,5vw,48px);
+  display:flex;align-items:center;justify-content:space-between;
+  gap:16px;flex-wrap:wrap;
+  font-family:'Inter','Segoe UI',sans-serif;
+  font-size:13px;color:#94a3b8;
+  box-shadow:0 -4px 24px rgba(0,0,0,0.4);
+">
+  <span style="flex:1;min-width:240px;line-height:1.5;">
+    🍪 Usiamo cookie tecnici per far funzionare il sito. Nessun tracciamento commerciale.
+  </span>
+  <div style="display:flex;gap:10px;flex-shrink:0;">
+    <a href="#" onclick="return false;" style="font-size:12px;color:#00d4b4;text-decoration:underline;line-height:32px;">Scopri di più</a>
+    <button onclick="acceptCookies()" style="
+      background:#00d4b4;color:#07090f;border:none;
+      padding:8px 20px;border-radius:8px;
+      font-family:'Inter',sans-serif;font-size:13px;font-weight:700;
+      cursor:pointer;white-space:nowrap;
+      transition:background 0.2s;
+    " onmouseover="this.style.background='#00a896'" onmouseout="this.style.background='#00d4b4'">
+      Accetto
+    </button>
+  </div>
+</div>
+
+<script>
+(function() {
+  if (!localStorage.getItem('cookie_ok')) {
+    document.getElementById('cookieBanner').style.display = 'flex';
+  }
+})();
+
+function acceptCookies() {
+  localStorage.setItem('cookie_ok', '1');
+  var b = document.getElementById('cookieBanner');
+  b.style.transition = 'opacity 0.3s';
+  b.style.opacity = '0';
+  setTimeout(function(){ b.style.display = 'none'; }, 300);
 }
 </script>
 
