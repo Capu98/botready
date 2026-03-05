@@ -993,7 +993,7 @@ footer {
       <li><a href="prezzi.html">Prezzi</a></li>
       <li><a href="#faq">FAQ</a></li>
     </ul>
-    <a class="nav-cta" href="#" onclick="openModal(); return false;">Prova gratis →</a>
+    <a class="nav-cta" href="javascript:void(0)" onclick="openModal()">Prova gratis →</a>
   </div>
 </nav>
 
@@ -1539,7 +1539,7 @@ footer {
       <div style="background:#0f172a;border:1px solid #22c55e;border-radius:16px;padding:2rem;box-shadow:0 0 20px rgba(34,197,94,0.1);">
         <div style="font-size:2rem;margin-bottom:1rem;">🤖</div>
         <h3 style="color:#f1f5f9;font-size:1.2rem;font-weight:700;margin-bottom:0.5rem;">BotReady</h3>
-        <p style="color:#94a3b8;font-size:0.9rem;margin-bottom:1.25rem;">Chatbot AI per ristoranti e PMI — risponde ai clienti 24/7 su WhatsApp e Telegram</p>
+        <p style="color:#94a3b8;font-size:0.9rem;margin-bottom:1.25rem;">Risponde ai clienti 24/7 su WhatsApp — prenotazioni, orari, no-show. Per ristoranti e PMI.</p>
         <span style="background:#166534;color:#86efac;font-size:0.75rem;font-weight:600;padding:0.25rem 0.75rem;border-radius:20px;">✅ Disponibile ora</span>
         <div style="margin-top:0.75rem;"><a href="https://capu98.github.io/botready/" style="color:#22c55e;font-size:0.85rem;font-weight:600;text-decoration:none;">Vai al sito →</a></div>
       </div>
@@ -1764,7 +1764,7 @@ function showSuccess(data) {
     <div class="success-icon">🎉</div>
     <h3>Richiesta ricevuta!</h3>
     <p style="margin-bottom:20px">Ora completa il questionario di configurazione — ci vogliono 5 minuti.</p>
-    <a href="onboarding.html?${params}" style="display:inline-block;background:var(--teal);color:#07090f;font-weight:800;padding:13px 28px;border-radius:10px;font-size:15px;text-decoration:none">
+    <a href="onboarding.html?${params.toString()}" style="display:inline-block;background:var(--teal);color:#07090f;font-weight:800;padding:13px 28px;border-radius:10px;font-size:15px;text-decoration:none">
       Configura il tuo bot →
     </a>
   `;
