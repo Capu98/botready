@@ -1577,17 +1577,6 @@ footer {
   </div>
 </footer>
 
-<!-- Form nascosto per Netlify (rilevato al deploy) -->
-<form name="lead" netlify netlify-honeypot="bot-field" hidden>
-  <input type="text" name="nome" />
-  <input type="text" name="cognome" />
-  <input type="text" name="biz" />
-  <input type="email" name="email" />
-  <input type="tel" name="tel" />
-  <input type="text" name="tipo" />
-  <input type="text" name="piano" />
-  <textarea name="note"></textarea>
-</form>
 
 <!-- MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
@@ -1737,14 +1726,15 @@ async function submitForm() {
     } catch { /* server non attivo, continua */ }
   }
 
-  // ── 2. Invia a Netlify Forms (quando è live sul web)
+  // ── 2. Invia a Formspree (quando è live sul web)
   if (!isLocal) {
     try {
-      const fd = new FormData();
-      fd.append('form-name', 'lead');
-      Object.entries(payload).forEach(([k, v]) => fd.append(k, v));
-      await fetch('/', { method: 'POST', body: fd });
-    } catch { /* ignora errori netlify */ }
+      await fetch('https://formspree.io/f/xzdankag', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch { /* ignora errori */ }
   }
 
   // ── 3. Mostra successo (sempre)
