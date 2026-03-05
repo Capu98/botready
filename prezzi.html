@@ -293,12 +293,11 @@ body::before {
   background: transparent; color: var(--text); cursor: pointer;
   transition: all .2s;
 }
-.plan-cta-btn::before { content: '$ '; color: var(--muted); }
 .plan-cta-btn:hover { border-color: var(--teal); color: var(--teal); background: rgba(0,212,180,.04); }
 .plan-card.pro .plan-cta-btn {
   background: var(--teal); color: var(--bg); border-color: var(--teal);
 }
-.plan-card.pro .plan-cta-btn::before { color: rgba(7,9,15,.5); }
+
 .plan-card.pro .plan-cta-btn:hover { background: var(--green); border-color: var(--green); }
 .plan-card.biz .plan-cta-btn:hover { border-color: var(--purple); color: var(--purple); background: rgba(167,139,250,.04); }
 
@@ -451,7 +450,6 @@ body::before {
 .btn-term.primary {
   background: var(--teal); color: var(--bg);
 }
-.btn-term.primary::before { content: '$ '; opacity: .5; }
 .btn-term.primary:hover { background: var(--green); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,212,180,.2); }
 .btn-term.ghost {
   background: transparent; border: 1px solid var(--border); color: var(--muted);
@@ -496,7 +494,7 @@ footer {
 <!-- NAV -->
 <nav class="nav">
   <div class="nav-inner">
-    <a href="index.html" class="nav-back">cd ~/botready</a>
+    <a href="index.html" class="nav-back"> Torna al sito</a>
     <div class="nav-logo">Bot<span>Ready</span></div>
     <button class="nav-cta" onclick="openModal('Pro')">Prova gratis →</button>
   </div>
@@ -527,8 +525,10 @@ footer {
 
 <!-- PLAN CARDS -->
 <section class="plans-section">
+  <h2 style="font-size:clamp(26px,4vw,38px);font-weight:900;letter-spacing:-1.5px;color:var(--white);margin-bottom:8px">I nostri piani</h2>
+  <p style="font-size:14px;color:var(--muted);margin-bottom:32px">Tutto incluso. Senza sorprese. Cancelli quando vuoi.</p>
   <div class="section-prompt">
-    <span class="sp">~/botready</span> <span class="sc">$ ls -la plans/</span>
+    <span class="sp">✦</span> <span class="sc">Scegli il piano più adatto alla tua attività</span>
   </div>
   <div class="plans-grid">
 
@@ -559,7 +559,7 @@ footer {
           <li class="plan-feat"><span class="feat-icon no">✗</span><span style="opacity:.35">Aggiornamenti inclusi</span></li>
           <li class="plan-feat"><span class="feat-icon no">✗</span><span style="opacity:.35">Report mensile</span></li>
         </ul>
-        <button class="plan-cta-btn" onclick="openModal('Starter')">init starter</button>
+        <button class="plan-cta-btn" onclick="openModal('Starter')">Inizia con Starter</button>
       </div>
     </div>
 
@@ -588,7 +588,7 @@ footer {
           <li class="plan-feat on"><span class="feat-icon yes">✓</span>Report mensile</li>
           <li class="plan-feat on"><span class="feat-icon yes">✓</span>Risponde con la tua voce</li>
         </ul>
-        <button class="plan-cta-btn" onclick="openModal('Pro')">init pro</button>
+        <button class="plan-cta-btn" onclick="openModal('Pro')">Inizia con Pro</button>
       </div>
     </div>
 
@@ -616,7 +616,7 @@ footer {
           <li class="plan-feat on"><span class="feat-icon yes">✓</span>Report avanzato settimanale</li>
           <li class="plan-feat on"><span class="feat-icon yes">✓</span>Fino a 3 sedi o attività</li>
         </ul>
-        <button class="plan-cta-btn" onclick="openModal('Enterprise')" style="border-color:rgba(167,139,250,.3)" onmouseover="this.style.borderColor='#a78bfa';this.style.color='#a78bfa'" onmouseout="this.style.borderColor='rgba(167,139,250,.3)';this.style.color=''">init enterprise</button>
+        <button class="plan-cta-btn" onclick="openModal('Enterprise')" style="border-color:rgba(167,139,250,.3)" onmouseover="this.style.borderColor='#a78bfa';this.style.color='#a78bfa'" onmouseout="this.style.borderColor='rgba(167,139,250,.3)';this.style.color=''">Inizia con Enterprise</button>
       </div>
     </div>
   </div>
@@ -625,16 +625,18 @@ footer {
 <!-- DIFF TABLE -->
 <section class="diff-section">
   <div class="diff-inner">
+    <h2 style="font-size:clamp(24px,3.5vw,34px);font-weight:900;letter-spacing:-1px;color:var(--white);margin-bottom:8px">Confronta i piani</h2>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:32px">Feature per feature — così scegli quello giusto per te.</p>
     <div class="section-prompt">
-      <span class="sp">~/botready</span> <span class="sc">$ diff starter.conf pro.conf enterprise.conf</span>
+      <span class="sp">✦</span> <span class="sc">Confronta le funzionalità incluse in ogni piano</span>
     </div>
     <table class="diff-table">
       <thead>
         <tr>
           <th>Feature</th>
           <th class="col-base">Starter · €29/mese</th>
-          <th class="col-pro">Pro · €59</th>
-          <th class="col-biz">Enterprise · €99</th>
+          <th class="col-pro">Pro · €59/mese</th>
+          <th class="col-biz">Enterprise · €99/mese</th>
         </tr>
       </thead>
       <tbody>
@@ -655,27 +657,29 @@ footer {
 
 <!-- STATS -->
 <section class="stats-section">
+  <h2 style="font-size:clamp(24px,3.5vw,34px);font-weight:900;letter-spacing:-1px;color:var(--white);margin-bottom:8px">Le nostre garanzie</h2>
+  <p style="font-size:14px;color:var(--muted);margin-bottom:8px">Numeri reali, non promesse.</p>
   <div class="section-prompt">
-    <span class="sp">~/botready</span> <span class="sc">$ cat metrics.log | tail -4</span>
+    <span class="sp">✦</span> <span class="sc">I nostri numeri, in chiaro</span>
   </div>
   <div class="stats-grid">
     <div class="stat-box">
-      <div class="stat-label">uptime</div>
+      <div class="stat-label">Disponibilità</div>
       <div class="stat-value" id="sv-1">99.9%</div>
       <div class="stat-desc">sempre disponibile per i tuoi clienti</div>
     </div>
     <div class="stat-box">
-      <div class="stat-label">response_time</div>
+      <div class="stat-label">Tempo di risposta</div>
       <div class="stat-value" id="sv-2">&lt;2s</div>
       <div class="stat-desc">risposta media ai messaggi</div>
     </div>
     <div class="stat-box">
-      <div class="stat-label">setup_time</div>
+      <div class="stat-label">Attivazione</div>
       <div class="stat-value" id="sv-3">24h</div>
       <div class="stat-desc">dal pagamento all'attivazione</div>
     </div>
     <div class="stat-box">
-      <div class="stat-label">exit_cost</div>
+      <div class="stat-label">Costo disdetta</div>
       <div class="stat-value" id="sv-4">€0</div>
       <div class="stat-desc">per disdire, in qualsiasi momento</div>
     </div>
@@ -684,8 +688,10 @@ footer {
 
 <!-- FAQ -->
 <section class="faq-section">
+  <h2 style="font-size:clamp(24px,3.5vw,34px);font-weight:900;letter-spacing:-1px;color:var(--white);margin-bottom:8px">Domande frequenti</h2>
+  <p style="font-size:14px;color:var(--muted);margin-bottom:32px">Le risposte che cercavi, senza giri di parole.</p>
   <div class="section-prompt">
-    <span class="sp">~/botready</span> <span class="sc">$ grep -i "faq" docs/*.md</span>
+    <span class="sp">✦</span> <span class="sc">Risposte alle domande più comuni</span>
   </div>
 
   <div class="faq-item">
@@ -735,13 +741,12 @@ footer {
       <span class="term-title">botready-init — bash</span>
     </div>
     <div class="cta-body">
-      <div class="cta-cmd-line"><span class="cp">botready@system</span>:~$ <span class="ct">./start.sh --plan=pro --trial=true</span></div>
       <div class="cta-cmd-line" style="color:var(--teal);margin-top:6px">✓ Configurato · Pronto in 24 ore · Prima settimana su di noi</div>
       <h2 class="cta-title">Inizia oggi.<br>Vai <span class="t">live in 24 ore.</span></h2>
       <p class="cta-sub">Nessuna carta di credito richiesta per il setup. Paghi solo quando è attivo.</p>
       <div class="cta-buttons">
-        <button class="btn-term primary" onclick="openModal('Pro')">init --plan=pro</button>
-        <button class="btn-term ghost" onclick="openModal('Starter')">init --plan=starter</button>
+        <button class="btn-term primary" onclick="openModal('Pro')">Inizia con Pro</button>
+        <button class="btn-term ghost" onclick="openModal('Starter')">Inizia con Starter</button>
       </div>
     </div>
   </div>
@@ -764,7 +769,7 @@ footer {
 <div id="modal" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.8);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:24px">
   <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:40px clamp(24px,4vw,48px);max-width:460px;width:100%;position:relative;font-family:var(--mono)">
     <button onclick="document.getElementById('modal').style.display='none'" style="position:absolute;top:16px;right:16px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;font-family:var(--mono)">✕</button>
-    <div style="font-size:11px;color:var(--teal);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">$ botready --init</div>
+    <div style="font-size:11px;color:var(--teal);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">✦ Inizia ora</div>
     <div style="font-size:20px;font-weight:800;color:var(--white);margin-bottom:6px">Inizia gratis</div>
     <p style="font-size:13px;color:var(--muted);margin-bottom:28px">Setup gratuito. Ti contatto entro 2 ore.</p>
     <div style="display:flex;flex-direction:column;gap:12px">
@@ -775,7 +780,7 @@ footer {
         <option value="Pro" selected>Pro — €59/mese (consigliato)</option>
         <option value="Enterprise">Enterprise — €99/mese</option>
       </select>
-      <button onclick="submitM()" style="background:var(--teal);color:var(--bg);border:none;border-radius:8px;padding:14px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--mono);transition:background .2s" onmouseover="this.style.background='var(--green)'" onmouseout="this.style.background='var(--teal)'">$ send --message → WhatsApp</button>
+      <button onclick="submitM()" style="background:var(--teal);color:var(--bg);border:none;border-radius:8px;padding:14px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--mono);transition:background .2s" onmouseover="this.style.background='var(--green)'" onmouseout="this.style.background='var(--teal)'">Invia richiesta via WhatsApp</button>
     </div>
   </div>
 </div>
